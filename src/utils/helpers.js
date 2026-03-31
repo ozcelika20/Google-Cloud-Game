@@ -44,10 +44,23 @@ export function sortByPoints(participants) {
 }
 
 /**
- * Get rank position
+ * Get rank position — equal points share the same rank (e.g. 1, 1, 3, 4)
  */
 export function getRank(participantId, sortedParticipants) {
-  return sortedParticipants.findIndex(p => p.id === participantId) + 1;
+  const participant = sortedParticipants.find(p => p.id === participantId);
+  if (!participant) return 0;
+  return sortedParticipants.filter(p => p.totalPoints > participant.totalPoints).length + 1;
+}
+
+/**
+ * Assign tied ranks to an already-sorted participant list
+ * Returns array of { participant, rank }
+ */
+export function assignRanks(sortedParticipants) {
+  return sortedParticipants.map((p, i, arr) => {
+    const rank = arr.filter(other => other.totalPoints > p.totalPoints).length + 1;
+    return { ...p, rank };
+  });
 }
 
 /**

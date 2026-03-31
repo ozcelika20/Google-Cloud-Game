@@ -13,7 +13,7 @@ const TEAM_LINKS = [
   { id: 'MSE', color: '#4285F4' },
   { id: 'WSE', color: '#34A853' },
   { id: 'DCBE', color: '#FBBC04' },
-  { id: 'ECBE', color: '#EA4335' },
+  { id: 'ECCBE', color: '#EA4335' },
   { id: 'DPM', color: '#A142F4' },
 ];
 
@@ -37,8 +37,8 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
       className="hidden lg:flex flex-col fixed top-0 left-0 h-full z-50 transition-[width] duration-200 ease-out"
       style={{
         width: expanded ? '240px' : '64px',
-        background: '#1A1D2E',
-        borderRight: '1px solid #2A2D3E',
+        background: '#FFFFFF',
+        borderRight: '1px solid #DADCE0',
         overflowX: 'hidden',
         overflowY: 'hidden',
         /* shadow only when hovering as overlay (not pinned) */
@@ -48,7 +48,7 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
       {/* ── Logo row ── */}
       <div
         className="flex items-center flex-shrink-0"
-        style={{ borderBottom: '1px solid #2A2D3E', height: '64px', padding: '0 14px', gap: '10px' }}
+        style={{ borderBottom: '1px solid #DADCE0', height: '64px', padding: '0 14px', gap: '10px' }}
       >
         {/* Icon */}
         <div
@@ -63,17 +63,17 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
           className="flex-1 overflow-hidden transition-all duration-200"
           style={{ opacity: expanded ? 1 : 0, width: expanded ? 'auto' : 0, whiteSpace: 'nowrap' }}
         >
-          <div className="font-bold text-sm" style={{ color: '#fff' }}>GCP Yarışması</div>
-          <div className="text-xs" style={{ color: '#8B8FA3' }}>2025-2026</div>
+          <div className="font-bold text-sm" style={{ color: '#202124' }}>Game Of Clouds</div>
+          <div className="text-xs" style={{ color: '#5F6368' }}>2025-2026</div>
         </div>
 
         {/* Pin button — visible only when expanded */}
         <button
           onClick={onPinToggle}
-          className="flex-shrink-0 flex items-center justify-center rounded-lg transition-colors hover:bg-white/10"
+          className="flex-shrink-0 flex items-center justify-center rounded-lg transition-colors hover:bg-black/5"
           style={{
             width: '28px', height: '28px',
-            color: isPinned ? '#4285F4' : '#8B8FA3',
+            color: isPinned ? '#4285F4' : '#5F6368',
             opacity: expanded ? 1 : 0,
             pointerEvents: expanded ? 'auto' : 'none',
             transition: 'opacity 0.15s, color 0.15s',
@@ -91,7 +91,7 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
         <div style={{ height: '28px', padding: '0 16px', display: 'flex', alignItems: 'center' }}>
           <span
             className="text-xs font-semibold uppercase tracking-wider transition-opacity duration-200"
-            style={{ color: '#8B8FA3', opacity: expanded ? 1 : 0, whiteSpace: 'nowrap' }}
+            style={{ color: '#5F6368', opacity: expanded ? 1 : 0, whiteSpace: 'nowrap' }}
           >
             Ana Menü
           </span>
@@ -112,17 +112,17 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
               borderRadius: '8px',
               fontSize: '14px',
               fontWeight: 500,
-              color: isActive ? '#fff' : '#8B8FA3',
+              color: isActive ? '#fff' : '#5F6368',
               background: isActive ? 'rgba(66,133,244,0.15)' : 'transparent',
               textDecoration: 'none',
               transition: 'background 0.15s, color 0.15s',
               gap: '12px',
             })}
-            className={({ isActive }) => isActive ? '' : 'hover:bg-white/5'}
+            className={({ isActive }) => isActive ? '' : 'hover:bg-black/5'}
           >
             {({ isActive }) => (
               <>
-                <item.icon size={18} color={isActive ? '#4285F4' : '#8B8FA3'} style={{ flexShrink: 0 }} />
+                <item.icon size={18} color={isActive ? '#4285F4' : '#5F6368'} style={{ flexShrink: 0 }} />
                 <span
                   className="transition-all duration-200"
                   style={{ opacity: expanded ? 1 : 0, width: expanded ? 'auto' : 0, overflow: 'hidden', whiteSpace: 'nowrap' }}
@@ -141,7 +141,7 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
         <div style={{ height: '28px', padding: '8px 16px 0', display: 'flex', alignItems: 'flex-end' }}>
           <span
             className="text-xs font-semibold uppercase tracking-wider transition-opacity duration-200"
-            style={{ color: '#8B8FA3', opacity: expanded ? 1 : 0, whiteSpace: 'nowrap' }}
+            style={{ color: '#5F6368', opacity: expanded ? 1 : 0, whiteSpace: 'nowrap' }}
           >
             Takımlar
           </span>
@@ -160,13 +160,13 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
               justifyContent: expanded ? 'flex-start' : 'center',
               borderRadius: '8px',
               fontSize: '14px',
-              color: isActive ? '#fff' : '#8B8FA3',
-              background: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
+              color: isActive ? '#fff' : '#5F6368',
+              background: isActive ? 'rgba(0,0,0,0.04)' : 'transparent',
               textDecoration: 'none',
               transition: 'background 0.15s, color 0.15s',
               gap: '12px',
             })}
-            className={({ isActive }) => isActive ? '' : 'hover:bg-white/5'}
+            className={({ isActive }) => isActive ? '' : 'hover:bg-black/5'}
           >
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: team.color, flexShrink: 0 }} />
             <span
@@ -180,15 +180,15 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
       </nav>
 
       {/* ── Footer ── */}
-      <div style={{ borderTop: '1px solid #2A2D3E', padding: '12px 14px', flexShrink: 0 }}>
+      <div style={{ borderTop: '1px solid #DADCE0', padding: '12px 14px', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34A853', boxShadow: '0 0 6px #34A853', flexShrink: 0 }} />
           <div
             className="transition-all duration-200 overflow-hidden"
             style={{ opacity: expanded ? 1 : 0, width: expanded ? 'auto' : 0, whiteSpace: 'nowrap' }}
           >
-            <div className="text-xs" style={{ color: '#8B8FA3' }}>Yarışma Aktif</div>
-            <div className="text-xs" style={{ color: '#8B8FA3' }}>Bitiş: 30 Kasım 2026</div>
+            <div className="text-xs" style={{ color: '#5F6368' }}>Yarışma Aktif</div>
+            <div className="text-xs" style={{ color: '#5F6368' }}>Bitiş: 30 Kasım 2026</div>
           </div>
         </div>
       </div>

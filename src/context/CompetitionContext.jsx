@@ -32,6 +32,7 @@ export function CompetitionProvider({ children }) {
         memberCount: members.length,
         avgScore: members.length > 0 ? Math.round(score / members.length) : 0,
         topScore: members.length > 0 ? Math.max(...members.map(m => m.totalPoints)) : 0,
+        certCount: members.reduce((sum, m) => sum + (m.certificates || []).length, 0),
         kusursuzBirlik: hasKusursuzBirlik(rawMembers),
         bulutOrdusu: hasBulutOrdusu(rawMembers),
       };
@@ -66,7 +67,7 @@ export function CompetitionProvider({ children }) {
     const ninja = participants.filter(p => p.totalPoints > 350 && p.totalPoints <= 750).length;
     const master = participants.filter(p => p.totalPoints > 750).length;
     return [
-      { name: 'Cloud Explorer', value: explorer, color: '#8B8FA3' },
+      { name: 'Cloud Explorer', value: explorer, color: '#5F6368' },
       { name: 'Cloud Ranger', value: ranger, color: '#34A853' },
       { name: 'Cloud Ninja', value: ninja, color: '#FBBC04' },
       { name: 'Cloud Master', value: master, color: '#EA4335' },

@@ -30,8 +30,8 @@ export default function LevelDistributionChart() {
   const { levelDistribution } = useCompetition();
 
   return (
-    <div className="card p-5">
-      <h3 className="font-semibold mb-4" style={{ color: '#FFFFFF' }}>Seviye Dağılımı</h3>
+    <div className="card p-8">
+      <h3 className="font-semibold mb-7" style={{ color: '#202124' }}>Seviye Dağılımı</h3>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie
@@ -49,7 +49,7 @@ export default function LevelDistributionChart() {
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            wrapperStyle={{ color: '#8B8FA3', fontSize: '12px' }}
+            wrapperStyle={{ color: '#5F6368', fontSize: '12px' }}
           />
         </PieChart>
       </ResponsiveContainer>

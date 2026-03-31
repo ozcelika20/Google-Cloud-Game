@@ -4,7 +4,7 @@ export const TEAMS = [
   { id: 'MSE', name: 'MSE', color: '#4285F4', fullName: 'Makine & Sistem Mühendisliği' },
   { id: 'WSE', name: 'WSE', color: '#34A853', fullName: 'Web & Yazılım Mühendisliği' },
   { id: 'DCBE', name: 'DCBE', color: '#FBBC04', fullName: 'Veri & Bulut İş Ortağı' },
-  { id: 'ECBE', name: 'ECBE', color: '#EA4335', fullName: 'Kurumsal Bulut İş Ortağı' },
+  { id: 'ECCBE', name: 'ECCBE', color: '#EA4335', fullName: 'Kurumsal Bulut İş Ortağı' },
   { id: 'DPM', name: 'DPM', color: '#A142F4', fullName: 'Dijital Ürün Yönetimi' },
 ];
 
@@ -37,126 +37,112 @@ export const ALL_CERTIFICATES = [
   ...CERTIFICATES.professional,
 ];
 
-const TURKISH_FIRST_NAMES = [
-  'Ahmet', 'Mehmet', 'Mustafa', 'Ali', 'Emre', 'Burak', 'Can', 'Cem', 'Deniz', 'Enes',
-  'Fatma', 'Ayşe', 'Zeynep', 'Elif', 'Merve', 'Selin', 'Büşra', 'Esra', 'Gül', 'Hande',
-  'Hasan', 'Hüseyin', 'İbrahim', 'İsmail', 'Kemal', 'Levent', 'Murat', 'Onur', 'Ömer', 'Serkan',
-  'Soner', 'Tayfun', 'Tolga', 'Ufuk', 'Volkan', 'Yusuf', 'Zafer', 'Barış', 'Caner', 'Doruk',
-  'Erkan', 'Fikret', 'Güven', 'Haluk', 'Ilgaz', 'Koray', 'Leyla', 'Naz', 'Pınar', 'Rüya',
-  'Sibel', 'Tuba', 'Ülkü', 'Vildan', 'Yasemin', 'Aslı', 'Bahar', 'Ceren', 'Derya', 'Duygu',
-  'Ecem', 'Filiz', 'Gamze', 'Hatice', 'Iraz', 'Jale', 'Kübra', 'Lale', 'Mine', 'Nur',
-  'Ozan', 'Pelin', 'Rabia', 'Şeyma', 'Tuğba', 'Ümit', 'Yağmur', 'Zülal', 'Alper', 'Berkay',
-  'Cenk', 'Dogan', 'Egemen', 'Ferhat', 'Gökhan', 'Harun', 'Irfan', 'Kaan', 'Melih', 'Nihat',
-];
-
-const TURKISH_LAST_NAMES = [
-  'Yılmaz', 'Kaya', 'Demir', 'Çelik', 'Şahin', 'Doğan', 'Kılıç', 'Arslan', 'Taş', 'Aydın',
-  'Özdemir', 'Arslan', 'Doğru', 'Erdoğan', 'Güler', 'Koç', 'Kurt', 'Öztürk', 'Polat', 'Sarı',
-  'Türk', 'Uçar', 'Yıldız', 'Zengin', 'Akçay', 'Balcı', 'Ceylan', 'Duman', 'Ekinci', 'Fidan',
-  'Güneş', 'Hazar', 'Işık', 'Kara', 'Lale', 'Mert', 'Narin', 'Oral', 'Pektaş', 'Rüzgar',
-  'Solmaz', 'Tekin', 'Uzun', 'Vardar', 'Yaman', 'Zorlu', 'Akın', 'Bayrak', 'Çiçek', 'Eroğlu',
-];
-
-function seededRandom(seed) {
-  let s = seed;
-  return function() {
-    s = (s * 1103515245 + 12345) & 0x7fffffff;
-    return s / 0x7fffffff;
-  };
-}
-
-function generateMonthlyHistory(basePoints, rng) {
-  const months = ['Ekim', 'Kasım', 'Aralık', 'Ocak', 'Şubat', 'Mart'];
-  let cumulative = 0;
-  return months.map((month, i) => {
-    const monthlyGain = Math.floor(rng() * (basePoints / 3)) + Math.floor(basePoints / 10);
-    cumulative += monthlyGain;
-    return { month, points: Math.min(cumulative, basePoints) };
-  });
-}
-
-function generateParticipant(id, teamId, seed) {
-  const rng = seededRandom(seed);
-  const firstName = TURKISH_FIRST_NAMES[Math.floor(rng() * TURKISH_FIRST_NAMES.length)];
-  const lastName = TURKISH_LAST_NAMES[Math.floor(rng() * TURKISH_LAST_NAMES.length)];
-
-  // Distribute points: 40% Explorer (0-150), 30% Ranger (151-350), 20% Ninja (351-750), 10% Master (751+)
-  const tierRoll = rng();
-  let targetPoints;
-  if (tierRoll < 0.40) {
-    targetPoints = Math.floor(rng() * 150);
-  } else if (tierRoll < 0.70) {
-    targetPoints = 151 + Math.floor(rng() * 199);
-  } else if (tierRoll < 0.90) {
-    targetPoints = 351 + Math.floor(rng() * 399);
-  } else {
-    targetPoints = 751 + Math.floor(rng() * 500);
-  }
-
-  // Generate certificates
-  const earnedCerts = [];
-  let certPoints = 0;
-  const availableCerts = [...ALL_CERTIFICATES];
-
-  for (const cert of availableCerts) {
-    if (certPoints + cert.points <= targetPoints && rng() > 0.6) {
-      earnedCerts.push(cert.id);
-      certPoints += cert.points;
-    }
-    if (certPoints >= targetPoints) break;
-  }
-
-  // Fill remaining with courses/labs
-  const remainingPoints = Math.max(0, targetPoints - certPoints);
-  const coursesLabs = Math.floor(remainingPoints / 20);
-
-  const totalBasePoints = certPoints + coursesLabs * 20;
-  const monthlyHistory = generateMonthlyHistory(totalBasePoints, rng);
-
+function makeParticipant(id, teamId, fullName) {
+  const parts = fullName.trim().split(' ');
+  const lastName = parts[parts.length - 1];
+  const firstName = parts.slice(0, parts.length - 1).join(' ');
   return {
     id,
-    name: `${firstName} ${lastName}`,
+    name: fullName,
     firstName,
     lastName,
     teamId,
-    coursesLabs,
-    certificates: earnedCerts,
-    basePoints: totalBasePoints,
-    totalPoints: totalBasePoints,
-    monthlyHistory,
+    coursesLabs: 0,
+    certificates: [],
+    basePoints: 0,
+    totalPoints: 0,
+    monthlyHistory: [],
     joinDate: '2025-10-01',
     avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}${lastName}&backgroundColor=1A1D2E&textColor=ffffff`,
   };
 }
 
-// Generate 220 participants, ~44 per team
-function generateAllParticipants() {
-  const participants = [];
-  const teams = ['MSE', 'WSE', 'DCBE', 'ECBE', 'DPM'];
-  const perTeam = [44, 44, 44, 44, 44];
+export const MOCK_PARTICIPANTS = [
+  // ECCBE (11)
+  makeParticipant(1,  'ECCBE', 'Ahmet Colak'),
+  makeParticipant(2,  'ECCBE', 'Enes Boyaci'),
+  makeParticipant(3,  'ECCBE', 'Engin Sancak'),
+  makeParticipant(4,  'ECCBE', 'Furkan Akarcesme'),
+  makeParticipant(5,  'ECCBE', 'Furkan Atak'),
+  makeParticipant(6,  'ECCBE', 'Haluk Furtuna'),
+  makeParticipant(7,  'ECCBE', 'Kemal Acar'),
+  makeParticipant(8,  'ECCBE', 'Mehmet Semih Apel'),
+  makeParticipant(9,  'ECCBE', 'Melih Demircan'),
+  makeParticipant(10, 'ECCBE', 'Ozan Kilinc'),
+  makeParticipant(11, 'ECCBE', 'Soner Oz'),
 
-  let id = 1;
-  teams.forEach((teamId, teamIndex) => {
-    for (let i = 0; i < perTeam[teamIndex]; i++) {
-      // Force WSE team to all have at least 1 course/lab (for Kusursuz Birlik)
-      const participant = generateParticipant(id, teamId, id * 7 + teamIndex * 31);
-      if (teamId === 'WSE' && participant.coursesLabs === 0 && participant.certificates.length === 0) {
-        participant.coursesLabs = 1;
-        participant.basePoints = 20;
-        participant.totalPoints = 20;
-      }
-      participants.push(participant);
-      id++;
-    }
-  });
+  // WSE (10)
+  makeParticipant(12, 'WSE', 'Erhan Arda'),
+  makeParticipant(13, 'WSE', 'Ferhat Ozdemir'),
+  makeParticipant(14, 'WSE', 'Gizem Boga'),
+  makeParticipant(15, 'WSE', 'Kaan Yildirim'),
+  makeParticipant(16, 'WSE', 'Melek Naz Aykut'),
+  makeParticipant(17, 'WSE', 'Nisan Tarhan'),
+  makeParticipant(18, 'WSE', 'Reha Ok'),
+  makeParticipant(19, 'WSE', 'Tolunay Tezcan'),
+  makeParticipant(20, 'WSE', 'Zafer Bozkurt'),
+  makeParticipant(21, 'WSE', 'Zeynep Kara'),
 
-  return participants;
-}
+  // MSE (13)
+  makeParticipant(22, 'MSE', 'Ahmet Bekir Bakkal'),
+  makeParticipant(23, 'MSE', 'Aysegul Durdu'),
+  makeParticipant(24, 'MSE', 'Baris Uyar'),
+  makeParticipant(25, 'MSE', 'Batuhan Erdogan'),
+  makeParticipant(26, 'MSE', 'Can Kuloglu'),
+  makeParticipant(27, 'MSE', 'Cansu Arar Erdem'),
+  makeParticipant(28, 'MSE', 'Eren Papakci'),
+  makeParticipant(29, 'MSE', 'Furkan Pasaoglu'),
+  makeParticipant(30, 'MSE', 'Lorin Vural'),
+  makeParticipant(31, 'MSE', 'Serkut Yegin'),
+  makeParticipant(32, 'MSE', 'Umut Erol'),
+  makeParticipant(33, 'MSE', 'Yusuf Burak Demir'),
+  makeParticipant(34, 'MSE', 'Zeynep Baltalioglu'),
 
-export const MOCK_PARTICIPANTS = generateAllParticipants();
+  // DPM (24)
+  makeParticipant(35, 'DPM', 'Ayse Nur Ozcelik'),
+  makeParticipant(36, 'DPM', 'Aysun Karagul'),
+  makeParticipant(37, 'DPM', 'Baris Can Turkyilmaz'),
+  makeParticipant(38, 'DPM', 'Burak Ozsahin'),
+  makeParticipant(39, 'DPM', 'Cansu Keremitci'),
+  makeParticipant(40, 'DPM', 'Dilara Unal'),
+  makeParticipant(41, 'DPM', 'Duygu Algul'),
+  makeParticipant(42, 'DPM', 'Ebru Tezcan Ustunluoglu'),
+  makeParticipant(43, 'DPM', 'Eda Guneri'),
+  makeParticipant(44, 'DPM', 'Esra Aydinlar'),
+  makeParticipant(45, 'DPM', 'Faruk Gulsen'),
+  makeParticipant(46, 'DPM', 'Gamze Sevdik Elci'),
+  makeParticipant(47, 'DPM', 'Gizem Kabasakal'),
+  makeParticipant(48, 'DPM', 'Kubra Cakar'),
+  makeParticipant(49, 'DPM', 'Mehpare Ozsipahi'),
+  makeParticipant(50, 'DPM', 'Melih Calli'),
+  makeParticipant(51, 'DPM', 'Melike Disbudak'),
+  makeParticipant(52, 'DPM', 'Nese Isik'),
+  makeParticipant(53, 'DPM', 'Onurhan Bas'),
+  makeParticipant(54, 'DPM', 'Ratipcan Uysal'),
+  makeParticipant(55, 'DPM', 'Serkan Celenk'),
+  makeParticipant(56, 'DPM', 'Sevcan Olcum'),
+  makeParticipant(57, 'DPM', 'Ugur Erdem'),
+  makeParticipant(58, 'DPM', 'Zeynep Aydin Ozdemir'),
 
-// Verify WSE team has Kusursuz Birlik (all members have ≥1 course or cert)
-// WSE participants are forced above
+  // DCBE (17)
+  makeParticipant(59, 'DCBE', 'Anil Ozturk'),
+  makeParticipant(60, 'DCBE', 'Cagri Artun'),
+  makeParticipant(61, 'DCBE', 'Deniz Oner'),
+  makeParticipant(62, 'DCBE', 'Dogukan Yalcin'),
+  makeParticipant(63, 'DCBE', 'Erdal Sarioglu'),
+  makeParticipant(64, 'DCBE', 'Esma Kilic'),
+  makeParticipant(65, 'DCBE', 'Mehmet Sahin'),
+  makeParticipant(66, 'DCBE', 'Mert Karaman'),
+  makeParticipant(67, 'DCBE', 'Oguzhan Derici'),
+  makeParticipant(68, 'DCBE', 'Onur Arslan'),
+  makeParticipant(69, 'DCBE', 'Ozge Kisaoglu'),
+  makeParticipant(70, 'DCBE', 'Ozgur Bozkurt'),
+  makeParticipant(71, 'DCBE', 'Said Ozgat'),
+  makeParticipant(72, 'DCBE', 'Sidar Orman'),
+  makeParticipant(73, 'DCBE', 'Tunga Sayici'),
+  makeParticipant(74, 'DCBE', 'Ugur Turkyilmaz'),
+  makeParticipant(75, 'DCBE', 'Umutcan Caner'),
+];
 
 export const INITIAL_BONUS_SETTINGS = {
   patronCildirdi: {

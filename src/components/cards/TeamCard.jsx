@@ -1,89 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Trophy, TrendingUp, CheckCircle } from 'lucide-react';
-import ProgressBar from '../common/ProgressBar';
+import { CheckCircle, Trophy } from 'lucide-react';
 import { formatNumber } from '../../utils/helpers';
 
-export default function TeamCard({ team, rank, maxScore }) {
-  const pct = maxScore > 0 ? (team.score / maxScore) * 100 : 0;
-
+export default function TeamCard({ team }) {
   return (
     <Link to={`/team/${team.id}`}>
       <div
-        className="card p-5 h-full"
-        style={{
-          borderLeft: `3px solid ${team.color}`,
-          cursor: 'pointer',
-        }}
+        className="card p-6 h-full"
+        style={{ borderTop: `3px solid ${team.color}`, cursor: 'pointer' }}
       >
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm"
-              style={{ background: `${team.color}22`, color: team.color, border: `1px solid ${team.color}44` }}
-            >
-              {team.id.slice(0, 2)}
-            </div>
-            <div>
-              <h3 className="font-bold text-base" style={{ color: '#FFFFFF' }}>{team.id}</h3>
-              <p className="text-xs" style={{ color: '#8B8FA3' }}>{team.memberCount} üye</p>
-            </div>
-          </div>
+        <div className="flex items-center gap-3 mb-6">
           <div
-            className="text-2xl font-black"
-            style={{ color: rank <= 3 ? team.color : '#8B8FA3' }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0"
+            style={{ background: `${team.color}22`, color: team.color, border: `1px solid ${team.color}44` }}
           >
-            #{rank}
+            {team.id.slice(0, 2)}
           </div>
-        </div>
-
-        {/* Score */}
-        <div className="mb-3">
-          <div className="flex justify-between items-baseline mb-1">
-            <span className="text-xs" style={{ color: '#8B8FA3' }}>Toplam Puan</span>
-            <span className="font-bold text-lg" style={{ color: '#FFFFFF' }}>
-              {formatNumber(team.score)}
-            </span>
+          <div>
+            <h3 className="font-bold text-base" style={{ color: '#202124' }}>{team.id}</h3>
+            <p className="text-xs" style={{ color: '#5F6368' }}>{team.memberCount} üye</p>
           </div>
-          <ProgressBar value={pct} max={100} color={team.color} height={6} />
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-2 mt-4">
-          <div className="text-center p-2 rounded-lg" style={{ background: '#0F1117' }}>
-            <p className="text-xs" style={{ color: '#8B8FA3' }}>Ort. Puan</p>
-            <p className="font-semibold text-sm" style={{ color: '#FFFFFF' }}>
-              {formatNumber(team.avgScore)}
-            </p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ background: '#F8F9FA' }}>
+            <span className="text-sm" style={{ color: '#5F6368' }}>Toplam Puan</span>
+            <span className="font-bold text-lg" style={{ color: team.color }}>
+              {formatNumber(team.score)}
+            </span>
           </div>
-          <div className="text-center p-2 rounded-lg" style={{ background: '#0F1117' }}>
-            <p className="text-xs" style={{ color: '#8B8FA3' }}>En Yüksek</p>
-            <p className="font-semibold text-sm" style={{ color: '#FFFFFF' }}>
-              {formatNumber(team.topScore)}
-            </p>
+          <div className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ background: '#F8F9FA' }}>
+            <span className="text-sm" style={{ color: '#5F6368' }}>Sertifika</span>
+            <span className="font-semibold text-base" style={{ color: '#202124' }}>
+              {team.certCount ?? 0}
+            </span>
           </div>
         </div>
 
         {/* Badges */}
-        <div className="flex gap-2 mt-3 flex-wrap">
-          {team.kusursuzBirlik && (
-            <span
-              className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
-              style={{ background: 'rgba(52, 168, 83, 0.15)', color: '#34A853', border: '1px solid rgba(52,168,83,0.3)' }}
-            >
-              <CheckCircle size={10} /> Kusursuz Birlik
-            </span>
-          )}
-          {team.bulutOrdusu && (
-            <span
-              className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
-              style={{ background: 'rgba(66, 133, 244, 0.15)', color: '#4285F4', border: '1px solid rgba(66,133,244,0.3)' }}
-            >
-              <Trophy size={10} /> Bulut Ordusu
-            </span>
-          )}
-        </div>
+        {(team.kusursuzBirlik || team.bulutOrdusu) && (
+          <div className="flex gap-2 mt-5 flex-wrap">
+            {team.kusursuzBirlik && (
+              <span
+                className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                style={{ background: 'rgba(52,168,83,0.12)', color: '#34A853', border: '1px solid rgba(52,168,83,0.25)' }}
+              >
+                <CheckCircle size={10} /> Kusursuz Birlik
+              </span>
+            )}
+            {team.bulutOrdusu && (
+              <span
+                className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                style={{ background: 'rgba(66,133,244,0.12)', color: '#4285F4', border: '1px solid rgba(66,133,244,0.25)' }}
+              >
+                <Trophy size={10} /> Bulut Ordusu
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );

@@ -2,12 +2,12 @@ import React, { useMemo } from 'react';
 import { useCompetition } from '../../hooks/useCompetition';
 import { CERTIFICATES } from '../../data/mockData';
 
-const TEAMS = ['MSE', 'WSE', 'DCBE', 'ECBE', 'DPM'];
+const TEAMS = ['MSE', 'WSE', 'DCBE', 'ECCBE', 'DPM'];
 const TEAM_COLORS = {
   MSE: '#4285F4',
   WSE: '#34A853',
   DCBE: '#FBBC04',
-  ECBE: '#EA4335',
+  ECCBE: '#EA4335',
   DPM: '#A142F4',
 };
 
@@ -34,12 +34,12 @@ export default function CertificateHeatmap() {
   }, [participants]);
 
   return (
-    <div className="card p-5 overflow-x-auto">
-      <h3 className="font-semibold mb-4" style={{ color: '#FFFFFF' }}>Sertifika Tamamlama Matrisi</h3>
+    <div className="card p-8 overflow-x-auto">
+      <h3 className="font-semibold mb-7" style={{ color: '#202124' }}>Sertifika Tamamlama Matrisi</h3>
       <table className="w-full text-xs" style={{ minWidth: '480px' }}>
         <thead>
           <tr>
-            <th className="text-left pb-2 pr-3" style={{ color: '#8B8FA3', fontWeight: 500, minWidth: '180px' }}>
+            <th className="text-left pb-2 pr-3" style={{ color: '#5F6368', fontWeight: 500, minWidth: '180px' }}>
               Sertifika
             </th>
             {TEAMS.map(t => (
@@ -52,9 +52,9 @@ export default function CertificateHeatmap() {
         <tbody>
           {matrix.map((row, i) => (
             <tr key={i} className="table-row-hover">
-              <td className="py-1.5 pr-3 font-medium truncate" style={{ color: '#FFFFFF', maxWidth: '180px' }}>
+              <td className="py-1.5 pr-3 font-medium truncate" style={{ color: '#202124', maxWidth: '180px' }}>
                 <div className="truncate" title={row.cert.name}>{row.cert.name}</div>
-                <div style={{ color: '#8B8FA3', fontSize: '10px' }}>{row.cert.level}</div>
+                <div style={{ color: '#5F6368', fontSize: '10px' }}>{row.cert.level}</div>
               </td>
               {TEAMS.map(t => {
                 const cell = row[t];
@@ -65,7 +65,7 @@ export default function CertificateHeatmap() {
                       className="inline-flex items-center justify-center rounded text-xs font-semibold"
                       style={{
                         background: `${TEAM_COLORS[t]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`,
-                        color: cell.pct > 0.3 ? '#FFFFFF' : '#8B8FA3',
+                        color: cell.pct > 0.3 ? '#FFFFFF' : '#5F6368',
                         minWidth: '36px',
                         height: '24px',
                         fontSize: '11px',

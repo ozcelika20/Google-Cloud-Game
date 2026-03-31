@@ -3,13 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Trophy, Award, CheckCircle, TrendingUp } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
 import TeamMembersTable from '../components/tables/TeamMembersTable';
-import StatCard from '../components/common/StatCard';
-import Badge from '../components/common/Badge';
-import { formatNumber, sortByPoints } from '../utils/helpers';
+import { formatNumber } from '../utils/helpers';
 import { hasKusursuzBirlik, hasBulutOrdusu } from '../utils/pointCalculator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const MONTHS = ['Ekim', 'Kasım', 'Aralık', 'Ocak', 'Şubat', 'Mart'];
+const MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım'];
 
 export default function TeamDetail() {
   const { teamId } = useParams();
@@ -17,10 +15,12 @@ export default function TeamDetail() {
 
   const team = getTeamById(teamId);
   const teamMembers = useMemo(() => participants.filter(p => p.teamId === teamId), [participants, teamId]);
-  const teamScore = teamScores.find(t => t.id === teamId);
   const rank = teamScores.findIndex(t => t.id === teamId) + 1;
 
-  const topMember = useMemo(() => sortByPoints(teamMembers)[0], [teamMembers]);
+  const coursesLabsCount = useMemo(() =>
+    teamMembers.filter(m => (m.coursesLabs || 0) > 0).length,
+    [teamMembers]
+  );
 
   const monthlyData = useMemo(() => {
     return MONTHS.map((month, idx) => {
@@ -41,7 +41,7 @@ export default function TeamDetail() {
 
   if (!team) {
     return (
-      <div className="p-6 text-center" style={{ color: '#8B8FA3' }}>
+      <div className="p-6 text-center" style={{ color: '#5F6368' }}>
         <p>Takım bulunamadı.</p>
         <Link to="/" className="mt-4 inline-block" style={{ color: '#4285F4' }}>← Ana Sayfa</Link>
       </div>
@@ -49,132 +49,90 @@ export default function TeamDetail() {
   }
 
   return (
-    <div className="p-4 lg:p-6 space-y-6">
+    <div className="p-6 lg:p-10 space-y-6">
       {/* Back */}
       <Link
         to="/"
         className="inline-flex items-center gap-2 text-sm hover:opacity-80 transition-opacity"
-        style={{ color: '#8B8FA3' }}
+        style={{ color: '#5F6368' }}
       >
         <ArrowLeft size={16} /> Ana Sayfa
       </Link>
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
+      {/* Header + Stats — tek satır */}
+      <div className="card p-5 flex flex-wrap items-center gap-4">
+        {/* Takım adı */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-lg"
+            className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-base"
             style={{ background: `${team.color}33`, border: `2px solid ${team.color}66`, color: team.color }}
           >
             {team.id}
           </div>
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>{team.id}</h1>
-            <p className="text-sm" style={{ color: '#8B8FA3' }}>{team.fullName}</p>
+            <h1 className="text-xl font-bold" style={{ color: '#202124' }}>{team.id}</h1>
+            <div className="flex gap-1.5 mt-1 flex-wrap">
+              {kusursuz && (
+                <span className="text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-semibold"
+                  style={{ background: 'rgba(52,168,83,0.15)', color: '#34A853', border: '1px solid rgba(52,168,83,0.3)' }}>
+                  <CheckCircle size={10} /> Kusursuz Birlik
+                </span>
+              )}
+              {bulutOrdusu && (
+                <span className="text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-semibold"
+                  style={{ background: 'rgba(66,133,244,0.15)', color: '#4285F4', border: '1px solid rgba(66,133,244,0.3)' }}>
+                  <Trophy size={10} /> Bulut Ordusu
+                </span>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
-          {kusursuz && (
-            <span className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-semibold"
-              style={{ background: 'rgba(52,168,83,0.15)', color: '#34A853', border: '1px solid rgba(52,168,83,0.3)' }}>
-              <CheckCircle size={12} /> Kusursuz Birlik +25 puan
-            </span>
-          )}
-          {bulutOrdusu && (
-            <span className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-semibold"
-              style={{ background: 'rgba(66,133,244,0.15)', color: '#4285F4', border: '1px solid rgba(66,133,244,0.3)' }}>
-              <Trophy size={12} /> Bulut Ordusu +100 puan
-            </span>
-          )}
-        </div>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          icon={Trophy}
-          title="Sıralama"
-          value={`#${rank}`}
-          subtitle="Genel sıralaması"
-          color={team.color}
-        />
-        <StatCard
-          icon={TrendingUp}
-          title="Toplam Puan"
-          value={teamScore?.score || 0}
-          color={team.color}
-        />
-        <StatCard
-          icon={Users}
-          title="Üye Sayısı"
-          value={teamMembers.length}
-          color={team.color}
-        />
-        <StatCard
-          icon={Award}
-          title="Sertifika"
-          value={certCount}
-          subtitle={`${teamScore?.avgScore || 0} ort.`}
-          color={team.color}
-        />
-      </div>
+        <div className="w-px self-stretch hidden sm:block" style={{ background: '#DADCE0' }} />
 
-      {/* Top Member & Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Chart */}
-        <div className="lg:col-span-2 card p-5">
-          <h3 className="font-semibold mb-4" style={{ color: '#FFFFFF' }}>Aylık Puan Gelişimi</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A2D3E" />
-              <XAxis dataKey="month" tick={{ fill: '#8B8FA3', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#8B8FA3', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => formatNumber(v)} width={60} />
-              <Tooltip
-                contentStyle={{ background: '#1A1D2E', border: '1px solid #2A2D3E', borderRadius: '8px' }}
-                labelStyle={{ color: '#FFFFFF' }}
-                itemStyle={{ color: team.color }}
-              />
-              <Line type="monotone" dataKey="total" stroke={team.color} strokeWidth={2} dot={{ fill: team.color, r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Top Member */}
-        {topMember && (
-          <div className="card p-5">
-            <h3 className="font-semibold mb-4" style={{ color: '#FFFFFF' }}>🥇 En İyi Üye</h3>
-            <Link to={`/participant/${topMember.id}`} className="hover:opacity-80 transition-opacity">
-              <div className="flex flex-col items-center text-center">
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-3"
-                  style={{ background: `${team.color}33`, border: `2px solid ${team.color}66`, color: team.color }}
-                >
-                  {topMember.name.slice(0, 1)}
-                </div>
-                <p className="font-bold" style={{ color: '#FFFFFF' }}>{topMember.name}</p>
-                <Badge points={topMember.totalPoints} size="sm" />
-                <p className="text-xl font-black mt-2" style={{ color: team.color }}>
-                  {formatNumber(topMember.totalPoints)} puan
-                </p>
-                <div className="grid grid-cols-2 gap-3 mt-3 w-full">
-                  <div className="rounded-lg p-2" style={{ background: '#0F1117' }}>
-                    <p className="font-semibold text-sm" style={{ color: '#FFFFFF' }}>{topMember.certificates?.length || 0}</p>
-                    <p className="text-xs" style={{ color: '#8B8FA3' }}>Sertifika</p>
-                  </div>
-                  <div className="rounded-lg p-2" style={{ background: '#0F1117' }}>
-                    <p className="font-semibold text-sm" style={{ color: '#FFFFFF' }}>{topMember.coursesLabs || 0}</p>
-                    <p className="text-xs" style={{ color: '#8B8FA3' }}>Kurs/Lab</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
+        {/* Statlar */}
+        {[
+          { icon: Trophy,    label: 'Sıralama',         value: `#${rank}` },
+          { icon: TrendingUp, label: 'Course/Lab Alan', value: coursesLabsCount },
+          { icon: Award,     label: 'Sertifika',        value: certCount },
+          { icon: Users,     label: 'Üye Sayısı',       value: teamMembers.length },
+        ].map(({ icon: Icon, label, value }) => (
+          <div key={label} className="flex items-center gap-2 flex-1 min-w-[100px]">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+              style={{ background: `${team.color}22`, border: `1px solid ${team.color}44` }}
+            >
+              <Icon size={15} color={team.color} />
+            </div>
+            <div>
+              <p className="text-xs" style={{ color: '#5F6368' }}>{label}</p>
+              <p className="text-base font-bold" style={{ color: '#202124' }}>{value}</p>
+            </div>
           </div>
-        )}
+        ))}
+      </div>
+
+      {/* Chart */}
+      <div className="card p-8">
+        <h3 className="font-semibold mb-7" style={{ color: '#202124' }}>Aylık Puan Gelişimi</h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={monthlyData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#DADCE0" />
+            <XAxis dataKey="month" tick={{ fill: '#5F6368', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#5F6368', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => formatNumber(v)} width={60} />
+            <Tooltip
+              contentStyle={{ background: '#FFFFFF', border: '1px solid #DADCE0', borderRadius: '8px' }}
+              labelStyle={{ color: '#202124' }}
+              itemStyle={{ color: team.color }}
+            />
+            <Line type="monotone" dataKey="total" stroke={team.color} strokeWidth={2} dot={{ fill: team.color, r: 4 }} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Members Table */}
-      <div>
-        <h2 className="text-lg font-bold mb-4" style={{ color: '#FFFFFF' }}>
+      <div style={{ paddingTop: '24px', paddingBottom: '24px' }}>
+        <h2 className="text-lg font-bold mb-7" style={{ color: '#202124' }}>
           Tüm Üyeler ({teamMembers.length})
         </h2>
         <TeamMembersTable members={teamMembers} teamColor={team.color} />

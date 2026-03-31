@@ -42,10 +42,10 @@ export default function CountdownTimer({ compact = false }) {
 
   return (
     <div
-      className="card p-5"
+      className="card p-8"
       style={{ background: 'rgba(251, 188, 4, 0.05)', border: '1px solid rgba(251, 188, 4, 0.3)' }}
     >
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-5">
         <Timer size={16} color="#FBBC04" />
         <span className="text-sm font-semibold" style={{ color: '#FBBC04' }}>Yarışma Bitimine Kalan</span>
       </div>
@@ -66,7 +66,7 @@ export default function CountdownTimer({ compact = false }) {
               >
                 {item.value}
               </div>
-              <div className="text-xs" style={{ color: '#8B8FA3' }}>{item.label}</div>
+              <div className="text-xs" style={{ color: '#5F6368' }}>{item.label}</div>
             </div>
           ))}
         </div>

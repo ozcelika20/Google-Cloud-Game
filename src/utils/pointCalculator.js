@@ -48,9 +48,7 @@ export function calculateParticipantPoints(participant, bonusSettings, allPartic
 
   // Kusursuz Birlik: all team members have >= 1 course/lab
   if (teamMembers.length > 0) {
-    const allHaveCourseOrLab = teamMembers.every(
-      m => (m.coursesLabs || 0) >= 1 || (m.certificates || []).length >= 1
-    );
+    const allHaveCourseOrLab = teamMembers.every(m => (m.coursesLabs || 0) >= 1);
     if (allHaveCourseOrLab) {
       total += 25;
     }
@@ -70,9 +68,7 @@ export function calculateParticipantPoints(participant, bonusSettings, allPartic
  */
 export function hasKusursuzBirlik(teamMembers) {
   if (!teamMembers || teamMembers.length === 0) return false;
-  return teamMembers.every(
-    m => (m.coursesLabs || 0) >= 1 || (m.certificates || []).length >= 1
-  );
+  return teamMembers.every(m => (m.coursesLabs || 0) >= 1);
 }
 
 /**

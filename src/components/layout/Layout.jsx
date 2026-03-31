@@ -12,7 +12,7 @@ export default function Layout() {
   const sidebarWidth = isPinned || isHovered ? 240 : 64;
 
   return (
-    <div className="min-h-screen" style={{ background: '#0F1117' }}>
+    <div className="min-h-screen" style={{ background: '#F8F9FA' }}>
       <Sidebar
         isPinned={isPinned}
         onPinToggle={() => setIsPinned((p) => !p)}
@@ -27,7 +27,9 @@ export default function Layout() {
         style={{ '--sidebar-width': `${sidebarWidth}px` }}
       >
         <BonusBanner />
-        <Outlet />
+        <div style={{ padding: '24px' }}>
+          <Outlet />
+        </div>
       </main>
 
       <MobileNav />

@@ -13,7 +13,7 @@ export default function CertificateCard({ certificate, earnedCount, totalPartici
 
   return (
     <div
-      className="card p-4"
+      className="card p-5"
       style={{ borderTop: `2px solid ${config.color}` }}
     >
       <div className="flex items-start justify-between mb-3">
@@ -35,7 +35,7 @@ export default function CertificateCard({ certificate, earnedCount, totalPartici
         </span>
       </div>
 
-      <h4 className="font-semibold text-sm mb-1 leading-tight" style={{ color: '#FFFFFF' }}>
+      <h4 className="font-semibold text-sm mb-1 leading-tight" style={{ color: '#202124' }}>
         {certificate.name}
       </h4>
 
@@ -49,12 +49,12 @@ export default function CertificateCard({ certificate, earnedCount, totalPartici
       {earnedCount !== undefined && (
         <div>
           <div className="flex justify-between text-xs mb-1">
-            <span style={{ color: '#8B8FA3' }}>Kazananlar</span>
-            <span style={{ color: '#FFFFFF' }}>{earnedCount} / {totalParticipants}</span>
+            <span style={{ color: '#5F6368' }}>Kazananlar</span>
+            <span style={{ color: '#202124' }}>{earnedCount} / {totalParticipants}</span>
           </div>
           <div
             className="rounded-full"
-            style={{ background: '#2A2D3E', height: '6px' }}
+            style={{ background: '#DADCE0', height: '6px' }}
           >
             <div
               className="rounded-full"
@@ -67,7 +67,7 @@ export default function CertificateCard({ certificate, earnedCount, totalPartici
               }}
             />
           </div>
-          <p className="text-xs mt-1" style={{ color: '#8B8FA3' }}>%{pct} tamamlama oranı</p>
+          <p className="text-xs mt-1" style={{ color: '#5F6368' }}>%{pct} tamamlama oranı</p>
         </div>
       )}
     </div>

@@ -28,25 +28,25 @@ export default function TeamScoreChart() {
   }));
 
   return (
-    <div className="card p-5">
-      <h3 className="font-semibold mb-4" style={{ color: '#FFFFFF' }}>Takım Puanları</h3>
+    <div className="card p-8">
+      <h3 className="font-semibold mb-7" style={{ color: '#202124' }}>Takım Puanları</h3>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} barSize={36} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2A2D3E" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#DADCE0" vertical={false} />
           <XAxis
             dataKey="name"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: '#8B8FA3', fontSize: 12 }}
+            tick={{ fill: '#5F6368', fontSize: 12 }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: '#8B8FA3', fontSize: 11 }}
+            tick={{ fill: '#5F6368', fontSize: 11 }}
             tickFormatter={v => formatNumber(v)}
             width={60}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(66,133,244,0.06)' }} />
           <Bar dataKey="puan" radius={[6, 6, 0, 0]}>
             {data.map((entry, index) => (
               <Cell key={index} fill={entry.color} />

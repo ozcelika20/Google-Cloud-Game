@@ -18,7 +18,7 @@ export default function ParticipantCard({ participant, rank }) {
           {rank && (
             <span
               className="text-lg font-black w-8 text-center flex-shrink-0"
-              style={{ color: rank <= 3 ? '#FBBC04' : '#8B8FA3' }}
+              style={{ color: rank <= 3 ? '#FBBC04' : '#5F6368' }}
             >
               {rank}
             </span>
@@ -30,7 +30,7 @@ export default function ParticipantCard({ participant, rank }) {
             {participant.name.slice(0, 2).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm truncate" style={{ color: '#FFFFFF' }}>
+            <p className="font-semibold text-sm truncate" style={{ color: '#202124' }}>
               {participant.name}
             </p>
             <p className="text-xs" style={{ color: team?.color }}>{participant.teamId}</p>
@@ -44,8 +44,8 @@ export default function ParticipantCard({ participant, rank }) {
 
         {/* Points */}
         <div className="flex justify-between items-center mb-2">
-          <span className="text-xs" style={{ color: '#8B8FA3' }}>Toplam Puan</span>
-          <span className="font-bold" style={{ color: '#FFFFFF' }}>
+          <span className="text-xs" style={{ color: '#5F6368' }}>Toplam Puan</span>
+          <span className="font-bold" style={{ color: '#202124' }}>
             {formatNumber(participant.totalPoints)}
           </span>
         </div>
@@ -59,7 +59,7 @@ export default function ParticipantCard({ participant, rank }) {
               color={team?.color || '#4285F4'}
               height={4}
             />
-            <p className="text-xs mt-1" style={{ color: '#8B8FA3' }}>
+            <p className="text-xs mt-1" style={{ color: '#5F6368' }}>
               {nextTier.nextTier.emoji} {nextTier.nextTier.title} için {formatNumber(nextTier.pointsNeeded)} puan kaldı
             </p>
           </div>
@@ -68,12 +68,12 @@ export default function ParticipantCard({ participant, rank }) {
         {/* Stats */}
         <div className="flex gap-3 mt-3">
           <div className="text-center">
-            <p className="text-xs font-semibold" style={{ color: '#FFFFFF' }}>{participant.certificates?.length || 0}</p>
-            <p className="text-xs" style={{ color: '#8B8FA3' }}>Sertifika</p>
+            <p className="text-xs font-semibold" style={{ color: '#202124' }}>{participant.certificates?.length || 0}</p>
+            <p className="text-xs" style={{ color: '#5F6368' }}>Sertifika</p>
           </div>
           <div className="text-center">
-            <p className="text-xs font-semibold" style={{ color: '#FFFFFF' }}>{participant.coursesLabs || 0}</p>
-            <p className="text-xs" style={{ color: '#8B8FA3' }}>Kurs/Lab</p>
+            <p className="text-xs font-semibold" style={{ color: '#202124' }}>{participant.coursesLabs || 0}</p>
+            <p className="text-xs" style={{ color: '#5F6368' }}>Kurs/Lab</p>
           </div>
         </div>
       </div>

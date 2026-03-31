@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Award } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
 import CertificateCard from '../components/cards/CertificateCard';
-import CertificateHeatmap from '../components/charts/CertificateHeatmap';
 import { CERTIFICATES } from '../data/mockData';
 
 const FILTER_OPTIONS = [
@@ -38,13 +37,13 @@ export default function Certificates() {
   const filteredCerts = filter === 'all' ? allCerts : allCerts.filter(c => c.level === filter);
 
   return (
-    <div className="p-4 lg:p-6 space-y-6">
+    <div className="p-6 lg:p-10 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Award size={24} color="#34A853" />
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>Sertifikalar</h1>
-          <p className="text-sm" style={{ color: '#8B8FA3' }}>
+          <h1 className="text-2xl font-bold" style={{ color: '#202124' }}>Sertifikalar</h1>
+          <p className="text-sm" style={{ color: '#5F6368' }}>
             Toplam {totalCerts} sertifika kazanıldı
           </p>
         </div>
@@ -56,21 +55,21 @@ export default function Certificates() {
           <p className="text-2xl font-black" style={{ color: '#34A853' }}>
             {CERTIFICATES.foundational.length}
           </p>
-          <p className="text-xs mt-1" style={{ color: '#8B8FA3' }}>Temel Sertifika</p>
+          <p className="text-xs mt-1" style={{ color: '#5F6368' }}>Temel Sertifika</p>
           <p className="text-xs font-semibold" style={{ color: '#34A853' }}>150 puan/adet</p>
         </div>
         <div className="card p-4 text-center">
           <p className="text-2xl font-black" style={{ color: '#4285F4' }}>
             {CERTIFICATES.associate.length}
           </p>
-          <p className="text-xs mt-1" style={{ color: '#8B8FA3' }}>Orta Düzey</p>
+          <p className="text-xs mt-1" style={{ color: '#5F6368' }}>Orta Düzey</p>
           <p className="text-xs font-semibold" style={{ color: '#4285F4' }}>150 puan/adet</p>
         </div>
         <div className="card p-4 text-center">
           <p className="text-2xl font-black" style={{ color: '#FBBC04' }}>
             {CERTIFICATES.professional.length}
           </p>
-          <p className="text-xs mt-1" style={{ color: '#8B8FA3' }}>Profesyonel</p>
+          <p className="text-xs mt-1" style={{ color: '#5F6368' }}>Profesyonel</p>
           <p className="text-xs font-semibold" style={{ color: '#FBBC04' }}>500 puan/adet</p>
         </div>
       </div>
@@ -83,9 +82,9 @@ export default function Certificates() {
             onClick={() => setFilter(opt.value)}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
             style={{
-              background: filter === opt.value ? '#4285F4' : '#1A1D2E',
-              color: filter === opt.value ? '#FFFFFF' : '#8B8FA3',
-              border: filter === opt.value ? '1px solid #4285F4' : '1px solid #2A2D3E',
+              background: filter === opt.value ? '#4285F4' : '#FFFFFF',
+              color: filter === opt.value ? '#FFFFFF' : '#5F6368',
+              border: filter === opt.value ? '1px solid #4285F4' : '1px solid #DADCE0',
             }}
           >
             {opt.label}
@@ -105,8 +104,6 @@ export default function Certificates() {
         ))}
       </div>
 
-      {/* Heatmap */}
-      <CertificateHeatmap />
     </div>
   );
 }

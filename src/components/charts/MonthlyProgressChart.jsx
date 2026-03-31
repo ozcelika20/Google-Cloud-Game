@@ -9,7 +9,7 @@ const TEAM_COLORS = {
   MSE: '#4285F4',
   WSE: '#34A853',
   DCBE: '#FBBC04',
-  ECBE: '#EA4335',
+  ECCBE: '#EA4335',
   DPM: '#A142F4',
 };
 
@@ -48,27 +48,27 @@ export default function MonthlyProgressChart() {
   }, [participants, teams]);
 
   return (
-    <div className="card p-5">
-      <h3 className="font-semibold mb-4" style={{ color: '#FFFFFF' }}>Aylık İlerleme</h3>
+    <div className="card p-6">
+      <h3 className="font-semibold mb-7" style={{ color: '#202124' }}>Aylık İlerleme</h3>
       <ResponsiveContainer width="100%" height={220}>
         <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2A2D3E" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#DADCE0" />
           <XAxis
             dataKey="month"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: '#8B8FA3', fontSize: 11 }}
+            tick={{ fill: '#5F6368', fontSize: 11 }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: '#8B8FA3', fontSize: 11 }}
+            tick={{ fill: '#5F6368', fontSize: 11 }}
             tickFormatter={v => formatNumber(v)}
             width={60}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            wrapperStyle={{ color: '#8B8FA3', fontSize: '12px' }}
+            wrapperStyle={{ color: '#5F6368', fontSize: '12px' }}
           />
           {teams.map(team => (
             <Line

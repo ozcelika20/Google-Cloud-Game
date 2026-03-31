@@ -12,13 +12,13 @@ export default function TeamMembersTable({ members, teamColor }) {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr style={{ borderBottom: '1px solid #2A2D3E' }}>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: '#8B8FA3', width: '60px' }}>Sıra</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: '#8B8FA3' }}>Üye</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider hidden sm:table-cell" style={{ color: '#8B8FA3' }}>Unvan</th>
-              <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: '#8B8FA3' }}>Puan</th>
-              <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wider hidden md:table-cell" style={{ color: '#8B8FA3' }}>Sertifika</th>
-              <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wider hidden md:table-cell" style={{ color: '#8B8FA3' }}>Kurs/Lab</th>
+            <tr style={{ borderBottom: '1px solid #DADCE0' }}>
+              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: '#5F6368', width: '60px' }}>Sıra</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: '#5F6368' }}>Üye</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider hidden sm:table-cell" style={{ color: '#5F6368' }}>Unvan</th>
+              <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: '#5F6368' }}>Puan</th>
+              <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wider hidden md:table-cell" style={{ color: '#5F6368' }}>Sertifika</th>
+              <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wider hidden md:table-cell" style={{ color: '#5F6368' }}>Kurs/Lab</th>
             </tr>
           </thead>
           <tbody>
@@ -26,10 +26,10 @@ export default function TeamMembersTable({ members, teamColor }) {
               <tr
                 key={member.id}
                 className="table-row-hover transition-colors"
-                style={{ borderBottom: '1px solid #1A1D2E' }}
+                style={{ borderBottom: '1px solid #FFFFFF' }}
               >
                 <td className="px-4 py-3 text-center">
-                  <span className="text-sm font-bold" style={{ color: i < 3 ? '#FBBC04' : '#8B8FA3' }}>
+                  <span className="text-sm font-bold" style={{ color: i < 3 ? '#FBBC04' : '#5F6368' }}>
                     {getMedalEmoji(i + 1)}
                   </span>
                 </td>
@@ -44,24 +44,24 @@ export default function TeamMembersTable({ members, teamColor }) {
                     >
                       {member.name.slice(0, 2).toUpperCase()}
                     </div>
-                    <span className="font-medium text-sm" style={{ color: '#FFFFFF' }}>{member.name}</span>
+                    <span className="font-medium text-sm" style={{ color: '#202124' }}>{member.name}</span>
                   </Link>
                 </td>
                 <td className="px-4 py-3 hidden sm:table-cell">
                   <Badge points={member.totalPoints} size="sm" />
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <span className="font-bold text-sm" style={{ color: '#FFFFFF' }}>
+                  <span className="font-bold text-sm" style={{ color: '#202124' }}>
                     {formatNumber(member.totalPoints)}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right hidden md:table-cell">
-                  <span className="text-sm" style={{ color: '#8B8FA3' }}>
+                  <span className="text-sm" style={{ color: '#5F6368' }}>
                     {member.certificates?.length || 0}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right hidden md:table-cell">
-                  <span className="text-sm" style={{ color: '#8B8FA3' }}>
+                  <span className="text-sm" style={{ color: '#5F6368' }}>
                     {member.coursesLabs || 0}
                   </span>
                 </td>

@@ -30,14 +30,14 @@ export default function ProgressBar({
     <div>
       {showLabel && (
         <div className="flex justify-between mb-1">
-          <span className="text-xs" style={{ color: '#8B8FA3' }}>{label}</span>
-          <span className="text-xs font-semibold" style={{ color: '#FFFFFF' }}>{Math.round(percent)}%</span>
+          <span className="text-xs" style={{ color: '#5F6368' }}>{label}</span>
+          <span className="text-xs font-semibold" style={{ color: '#202124' }}>{Math.round(percent)}%</span>
         </div>
       )}
       <div
         className="rounded-full overflow-hidden"
         style={{
-          background: '#2A2D3E',
+          background: '#DADCE0',
           height: `${height}px`,
           borderRadius: `${height}px`,
         }}

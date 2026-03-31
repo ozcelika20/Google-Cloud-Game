@@ -4,7 +4,7 @@ export const TITLES = [
     max: 150,
     title: 'Cloud Explorer',
     emoji: '☁️',
-    color: '#8B8FA3',
+    color: '#5F6368',
     bgColor: 'rgba(139, 143, 163, 0.15)',
     borderColor: 'rgba(139, 143, 163, 0.4)',
     label: '☁️ Cloud Explorer',

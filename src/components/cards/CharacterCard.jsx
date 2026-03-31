@@ -6,7 +6,7 @@ import { formatNumber } from '../../utils/helpers';
 import ProgressBar from '../common/ProgressBar';
 
 const RANK_FRAMES = {
-  'Cloud Explorer': { gradient: 'linear-gradient(135deg, #3A3D4E, #2A2D3E)', border: '#8B8FA3' },
+  'Cloud Explorer': { gradient: 'linear-gradient(135deg, #3A3D4E, #DADCE0)', border: '#5F6368' },
   'Cloud Ranger': { gradient: 'linear-gradient(135deg, #1A2E20, #1A2D22)', border: '#34A853' },
   'Cloud Ninja': { gradient: 'linear-gradient(135deg, #2E2A1A, #2D2A18)', border: '#FBBC04' },
   'Cloud Master': { gradient: 'linear-gradient(135deg, #2E1A1A, #2D1A1A)', border: '#EA4335' },
@@ -31,7 +31,7 @@ export default function CharacterCard({ participant, rank }) {
           boxShadow: `0 0 20px ${frame.border}33`,
         }}
       >
-        <div className="rounded-xl p-4" style={{ background: '#1A1D2E' }}>
+        <div className="rounded-xl p-4" style={{ background: '#FFFFFF' }}>
           {/* Rank badge */}
           {rank && (
             <div className="flex justify-between items-start mb-3">
@@ -56,7 +56,7 @@ export default function CharacterCard({ participant, rank }) {
             >
               {participant.name.slice(0, 1)}
             </div>
-            <h3 className="font-bold text-center text-sm leading-tight" style={{ color: '#FFFFFF' }}>
+            <h3 className="font-bold text-center text-sm leading-tight" style={{ color: '#202124' }}>
               {participant.name}
             </h3>
             <span className="text-xs font-semibold" style={{ color: team?.color }}>
@@ -78,17 +78,17 @@ export default function CharacterCard({ participant, rank }) {
 
           {/* Stats grid */}
           <div className="grid grid-cols-3 gap-1 mb-3 text-center">
-            <div className="rounded-lg p-1.5" style={{ background: '#0F1117' }}>
+            <div className="rounded-lg p-1.5" style={{ background: '#F8F9FA' }}>
               <p className="text-sm font-bold" style={{ color: '#FBBC04' }}>{formatNumber(participant.totalPoints)}</p>
-              <p className="text-xs" style={{ color: '#8B8FA3' }}>Puan</p>
+              <p className="text-xs" style={{ color: '#5F6368' }}>Puan</p>
             </div>
-            <div className="rounded-lg p-1.5" style={{ background: '#0F1117' }}>
+            <div className="rounded-lg p-1.5" style={{ background: '#F8F9FA' }}>
               <p className="text-sm font-bold" style={{ color: '#34A853' }}>{certCount}</p>
-              <p className="text-xs" style={{ color: '#8B8FA3' }}>Sert.</p>
+              <p className="text-xs" style={{ color: '#5F6368' }}>Sert.</p>
             </div>
-            <div className="rounded-lg p-1.5" style={{ background: '#0F1117' }}>
+            <div className="rounded-lg p-1.5" style={{ background: '#F8F9FA' }}>
               <p className="text-sm font-bold" style={{ color: '#4285F4' }}>{courseCount}</p>
-              <p className="text-xs" style={{ color: '#8B8FA3' }}>Kurs</p>
+              <p className="text-xs" style={{ color: '#5F6368' }}>Kurs</p>
             </div>
           </div>
 
@@ -101,7 +101,7 @@ export default function CharacterCard({ participant, rank }) {
                 color={nextTier.nextTier.color}
                 height={5}
               />
-              <p className="text-xs mt-1 text-center" style={{ color: '#8B8FA3' }}>
+              <p className="text-xs mt-1 text-center" style={{ color: '#5F6368' }}>
                 {formatNumber(nextTier.pointsNeeded)} → {nextTier.nextTier.emoji}
               </p>
             </div>

@@ -14,7 +14,7 @@ export default function MobileNav() {
   return (
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-30 flex items-center"
-      style={{ background: '#1A1D2E', borderTop: '1px solid #2A2D3E', paddingBottom: 'env(safe-area-inset-bottom)' }}
+      style={{ background: '#FFFFFF', borderTop: '1px solid #DADCE0', paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {NAV_ITEMS.map(item => (
         <NavLink
@@ -27,12 +27,12 @@ export default function MobileNav() {
             }`
           }
           style={({ isActive }) => ({
-            color: isActive ? '#4285F4' : '#8B8FA3',
+            color: isActive ? '#4285F4' : '#5F6368',
           })}
         >
           {({ isActive }) => (
             <>
-              <item.icon size={20} color={isActive ? '#4285F4' : '#8B8FA3'} />
+              <item.icon size={20} color={isActive ? '#4285F4' : '#5F6368'} />
               <span>{item.label}</span>
             </>
           )}
