@@ -11,7 +11,7 @@ import Admin from './pages/Admin';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/Google-Cloud-Game">
+    <BrowserRouter basename="/">
       <CompetitionProvider>
         <Routes>
           <Route path="/" element={<Layout />}>
