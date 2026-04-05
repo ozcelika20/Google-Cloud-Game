@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Award } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
 import StatCard from '../components/common/StatCard';
@@ -67,9 +68,13 @@ export default function Home() {
       <div>
         <div className="flex items-center justify-between mb-7">
           <h2 className="text-xl font-bold" style={{ color: '#202124' }}>🏆 İlk 10 Sıralama</h2>
-          <a href="/leaderboard" className="text-sm font-semibold" style={{ color: '#4285F4' }}>
+          <NavLink
+            to="/leaderboard"
+            style={{ color: '#4285F4' }}
+            className="text-sm font-semibold"
+          >
             Tümünü Gör →
-          </a>
+          </NavLink>
         </div>
         <LeaderboardTable participants={leaderboard} showAll={false} />
       </div>
