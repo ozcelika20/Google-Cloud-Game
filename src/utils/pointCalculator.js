@@ -1,37 +1,67 @@
 import { ALL_CERTIFICATES } from '../data/mockData';
 
+const CERT_MAP = {};
+ALL_CERTIFICATES.forEach(c => { CERT_MAP[c.id] = c; });
+
+const COURSE_LAB_POINTS = 20;
+
 /**
- * Calculate total points for a participant based on their data and active bonuses.
+ * Returns the active custom rules for a given date (defaults to today).
  */
-export function calculateParticipantPoints(participant, bonusSettings, allParticipants) {
-  const certMap = {};
-  ALL_CERTIFICATES.forEach(c => { certMap[c.id] = c; });
-
-  // 1. Base points: courses/labs * 20
-  const coursePoints = (participant.coursesLabs || 0) * 20;
-
-  // 2. Certificate points
-  let certPoints = 0;
-  (participant.certificates || []).forEach(certId => {
-    if (certMap[certId]) {
-      certPoints += certMap[certId].points;
-    }
+export function getActiveRules(customRules, date = new Date()) {
+  if (!customRules || customRules.length === 0) return [];
+  return customRules.filter(rule => {
+    if (!rule.active) return false;
+    const start = rule.startDate ? new Date(rule.startDate) : null;
+    const end   = rule.endDate   ? new Date(rule.endDate + 'T23:59:59') : null;
+    if (start && date < start) return false;
+    if (end   && date > end)   return false;
+    return true;
   });
+}
 
-  // 3. Double Point bonus: 2x cert points
-  let finalCertPoints = certPoints;
-  if (bonusSettings?.doublePoint?.active) {
-    finalCertPoints = certPoints * 2;
+/**
+ * Apply active custom rules multiplier to a base amount.
+ * scope: 'course' | 'lab' | 'certificate'
+ * Multipliers stack additively (e.g. two ×1.5 rules → ×2.0, not ×2.25).
+ */
+function applyRuleMultiplier(baseAmount, activeRules, scope) {
+  if (!activeRules || activeRules.length === 0) return baseAmount;
+  let bonus = 0;
+  for (const rule of activeRules) {
+    const scopes = rule.scopes || [];
+    if (!scopes.includes(scope)) continue;
+    const pct = parseFloat(rule.multiplier) || 0; // e.g. 20 means +20%
+    bonus += pct / 100;
   }
+  return Math.floor(baseAmount * (1 + bonus));
+}
 
-  let total = coursePoints + finalCertPoints;
+/**
+ * Calculate total points for a single participant.
+ * Requires allParticipants to compute team bonuses.
+ */
+export function calculateParticipantPoints(participant, customRules, allParticipants) {
+  const activeRules = getActiveRules(customRules);
 
-  // 4. Patron Çıldırdı bonus: +50% for active period
-  if (bonusSettings?.patronCildirdi?.active) {
-    total = Math.floor(total * 1.5);
-  }
+  // 1. Course points
+  const rawCoursePoints = (participant.courses || 0) * COURSE_LAB_POINTS;
+  const coursePoints    = applyRuleMultiplier(rawCoursePoints, activeRules, 'course');
 
-  // 5. İstikrar Puanı: if current month >= 150% of previous month, multiply by 1.2x
+  // 2. Lab points
+  const rawLabPoints = (participant.labs || 0) * COURSE_LAB_POINTS;
+  const labPoints    = applyRuleMultiplier(rawLabPoints, activeRules, 'lab');
+
+  // 3. Certificate points
+  let rawCertPoints = 0;
+  (participant.certificates || []).forEach(certId => {
+    if (CERT_MAP[certId]) rawCertPoints += CERT_MAP[certId].points;
+  });
+  const certPoints = applyRuleMultiplier(rawCertPoints, activeRules, 'certificate');
+
+  let total = coursePoints + labPoints + certPoints;
+
+  // 4. İstikrar Puanı: previous month → current month ≥ +50% → ×1.2
   const history = participant.monthlyHistory || [];
   if (history.length >= 2) {
     const prev = history[history.length - 2].points;
@@ -41,60 +71,44 @@ export function calculateParticipantPoints(participant, bonusSettings, allPartic
     }
   }
 
-  // 6. Team bonuses (computed at team level, added per participant)
+  // 5. Team bonuses (requires allParticipants)
   const teamMembers = allParticipants
     ? allParticipants.filter(p => p.teamId === participant.teamId)
     : [];
 
-  // Kusursuz Birlik: all team members have >= 1 course/lab
   if (teamMembers.length > 0) {
-    const allHaveCourseOrLab = teamMembers.every(m => (m.coursesLabs || 0) >= 1);
-    if (allHaveCourseOrLab) {
-      total += 25;
-    }
+    // Kusursuz Birlik: every member has ≥1 course or lab → +25
+    const allHaveActivity = teamMembers.every(m => (m.coursesLabs || 0) >= 1);
+    if (allHaveActivity) total += 25;
 
-    // Bulut Ordusu: all team members have >= 1 certificate
+    // Bulut Ordusu: every member has ≥1 certificate → +100
     const allHaveCert = teamMembers.every(m => (m.certificates || []).length >= 1);
-    if (allHaveCert) {
-      total += 100;
-    }
+    if (allHaveCert) total += 100;
   }
 
   return total;
 }
 
-/**
- * Check if a team has Kusursuz Birlik bonus
- */
 export function hasKusursuzBirlik(teamMembers) {
   if (!teamMembers || teamMembers.length === 0) return false;
   return teamMembers.every(m => (m.coursesLabs || 0) >= 1);
 }
 
-/**
- * Check if a team has Bulut Ordusu bonus
- */
 export function hasBulutOrdusu(teamMembers) {
   if (!teamMembers || teamMembers.length === 0) return false;
   return teamMembers.every(m => (m.certificates || []).length >= 1);
 }
 
-/**
- * Calculate team total score
- */
-export function calculateTeamScore(teamId, participants, bonusSettings) {
+export function calculateTeamScore(teamId, participants, customRules) {
   const teamMembers = participants.filter(p => p.teamId === teamId);
   return teamMembers.reduce((sum, p) => {
-    return sum + calculateParticipantPoints(p, bonusSettings, participants);
+    return sum + calculateParticipantPoints(p, customRules, participants);
   }, 0);
 }
 
-/**
- * Get all participants with calculated points
- */
-export function getParticipantsWithPoints(participants, bonusSettings) {
+export function getParticipantsWithPoints(participants, customRules) {
   return participants.map(p => ({
     ...p,
-    totalPoints: calculateParticipantPoints(p, bonusSettings, participants),
+    totalPoints: calculateParticipantPoints(p, customRules, participants),
   }));
 }

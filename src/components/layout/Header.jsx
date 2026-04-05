@@ -4,8 +4,8 @@ import CountdownTimer from '../common/CountdownTimer';
 import { useCompetition } from '../../hooks/useCompetition';
 
 export default function Header({ onMenuToggle }) {
-  const { bonusSettings } = useCompetition();
-  const activeBonus = bonusSettings.patronCildirdi.active || bonusSettings.doublePoint.active;
+  const { activeRules } = useCompetition();
+  const activeBonus = activeRules.length > 0;
 
   return (
     <header

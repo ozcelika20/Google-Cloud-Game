@@ -1,55 +1,78 @@
-import React, { createContext, useState, useMemo, useCallback } from 'react';
-import { MOCK_PARTICIPANTS, TEAMS, ALL_CERTIFICATES, INITIAL_BONUS_SETTINGS, COMPETITION_END_DATE } from '../data/mockData';
-import { getParticipantsWithPoints, calculateTeamScore, hasKusursuzBirlik, hasBulutOrdusu } from '../utils/pointCalculator';
+import React, { createContext, useState, useMemo, useCallback, useEffect } from 'react';
+import { TEAMS, ALL_CERTIFICATES, COMPETITION_END_DATE } from '../data/mockData';
+import {
+  getParticipantsWithPoints,
+  calculateTeamScore,
+  hasKusursuzBirlik,
+  hasBulutOrdusu,
+  getActiveRules,
+} from '../utils/pointCalculator';
 import { sortByPoints, groupByTeam } from '../utils/helpers';
+import participantsData from '../data/participants.json';
 
 export const CompetitionContext = createContext(null);
 
+const CUSTOM_RULES_KEY = 'goc_custom_rules';
+
+function loadCustomRules() {
+  try {
+    const raw = localStorage.getItem(CUSTOM_RULES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomRules(rules) {
+  localStorage.setItem(CUSTOM_RULES_KEY, JSON.stringify(rules));
+}
+
 export function CompetitionProvider({ children }) {
-  const [rawParticipants, setRawParticipants] = useState(MOCK_PARTICIPANTS);
-  const [bonusSettings, setBonusSettings] = useState(INITIAL_BONUS_SETTINGS);
+  const [rawParticipants] = useState(() => participantsData.participants || []);
+  const [customRules, setCustomRules] = useState(loadCustomRules);
   const [competitionEndDate] = useState(COMPETITION_END_DATE);
+
+  // Persist rules to localStorage whenever they change
+  useEffect(() => {
+    saveCustomRules(customRules);
+  }, [customRules]);
 
   // Computed: participants with calculated points
   const participants = useMemo(() => {
-    return getParticipantsWithPoints(rawParticipants, bonusSettings);
-  }, [rawParticipants, bonusSettings]);
+    return getParticipantsWithPoints(rawParticipants, customRules);
+  }, [rawParticipants, customRules]);
 
-  // Computed: leaderboard (sorted by points)
-  const leaderboard = useMemo(() => {
-    return sortByPoints(participants);
-  }, [participants]);
+  // Computed: leaderboard
+  const leaderboard = useMemo(() => sortByPoints(participants), [participants]);
 
   // Computed: team scores
   const teamScores = useMemo(() => {
     return TEAMS.map(team => {
-      const members = participants.filter(p => p.teamId === team.id);
-      const score = members.reduce((sum, p) => sum + p.totalPoints, 0);
+      const members    = participants.filter(p => p.teamId === team.id);
       const rawMembers = rawParticipants.filter(p => p.teamId === team.id);
+      const score = members.reduce((sum, p) => sum + p.totalPoints, 0);
       return {
         ...team,
         score,
         memberCount: members.length,
-        avgScore: members.length > 0 ? Math.round(score / members.length) : 0,
-        topScore: members.length > 0 ? Math.max(...members.map(m => m.totalPoints)) : 0,
-        certCount: members.reduce((sum, m) => sum + (m.certificates || []).length, 0),
+        avgScore:    members.length > 0 ? Math.round(score / members.length) : 0,
+        topScore:    members.length > 0 ? Math.max(...members.map(m => m.totalPoints)) : 0,
+        certCount:   members.reduce((sum, m) => sum + (m.certificates || []).length, 0),
         kusursuzBirlik: hasKusursuzBirlik(rawMembers),
-        bulutOrdusu: hasBulutOrdusu(rawMembers),
+        bulutOrdusu:    hasBulutOrdusu(rawMembers),
       };
     }).sort((a, b) => b.score - a.score);
   }, [participants, rawParticipants]);
 
   // Computed: grouped by team
-  const participantsByTeam = useMemo(() => {
-    return groupByTeam(participants);
-  }, [participants]);
+  const participantsByTeam = useMemo(() => groupByTeam(participants), [participants]);
 
   // Computed: stats
   const stats = useMemo(() => {
-    const totalPoints = participants.reduce((s, p) => s + p.totalPoints, 0);
-    const totalCerts = participants.reduce((s, p) => s + (p.certificates || []).length, 0);
+    const totalPoints     = participants.reduce((s, p) => s + p.totalPoints, 0);
+    const totalCerts      = participants.reduce((s, p) => s + (p.certificates || []).length, 0);
     const totalCourseLabs = participants.reduce((s, p) => s + (p.coursesLabs || 0), 0);
-    const certifiedCount = participants.filter(p => (p.certificates || []).length > 0).length;
+    const certifiedCount  = participants.filter(p => (p.certificates || []).length > 0).length;
     return {
       totalParticipants: participants.length,
       totalPoints,
@@ -63,78 +86,54 @@ export function CompetitionProvider({ children }) {
   // Computed: level distribution
   const levelDistribution = useMemo(() => {
     const explorer = participants.filter(p => p.totalPoints <= 150).length;
-    const ranger = participants.filter(p => p.totalPoints > 150 && p.totalPoints <= 350).length;
-    const ninja = participants.filter(p => p.totalPoints > 350 && p.totalPoints <= 750).length;
-    const master = participants.filter(p => p.totalPoints > 750).length;
+    const ranger   = participants.filter(p => p.totalPoints > 150 && p.totalPoints <= 350).length;
+    const ninja    = participants.filter(p => p.totalPoints > 350 && p.totalPoints <= 750).length;
+    const master   = participants.filter(p => p.totalPoints > 750).length;
     return [
       { name: 'Cloud Explorer', value: explorer, color: '#5F6368' },
-      { name: 'Cloud Ranger', value: ranger, color: '#34A853' },
-      { name: 'Cloud Ninja', value: ninja, color: '#FBBC04' },
-      { name: 'Cloud Master', value: master, color: '#EA4335' },
+      { name: 'Cloud Ranger',   value: ranger,   color: '#34A853' },
+      { name: 'Cloud Ninja',    value: ninja,     color: '#FBBC04' },
+      { name: 'Cloud Master',   value: master,    color: '#EA4335' },
     ];
   }, [participants]);
 
-  // Actions
-  const toggleBonus = useCallback((bonusKey, value) => {
-    setBonusSettings(prev => ({
-      ...prev,
-      [bonusKey]: {
-        ...prev[bonusKey],
-        active: value !== undefined ? value : !prev[bonusKey].active,
-      },
-    }));
-  }, []);
+  // Active rules for popup
+  const activeRules = useMemo(() => getActiveRules(customRules), [customRules]);
 
-  const updateBonusSettings = useCallback((bonusKey, updates) => {
-    setBonusSettings(prev => ({
-      ...prev,
-      [bonusKey]: {
-        ...prev[bonusKey],
-        ...updates,
-      },
-    }));
-  }, []);
-
-  const updateParticipant = useCallback((id, data) => {
-    setRawParticipants(prev =>
-      prev.map(p => (p.id === id ? { ...p, ...data } : p))
-    );
-  }, []);
-
-  const addParticipant = useCallback((data) => {
-    const newId = Math.max(...rawParticipants.map(p => p.id)) + 1;
-    const newParticipant = {
-      id: newId,
-      certificates: [],
-      coursesLabs: 0,
-      basePoints: 0,
-      totalPoints: 0,
-      monthlyHistory: [],
-      joinDate: new Date().toISOString().split('T')[0],
-      ...data,
+  // Rule actions
+  const addCustomRule = useCallback((rule) => {
+    const newRule = {
+      ...rule,
+      id: Date.now().toString(),
+      active: true,
     };
-    setRawParticipants(prev => [...prev, newParticipant]);
-    return newParticipant;
-  }, [rawParticipants]);
+    setCustomRules(prev => [...prev, newRule]);
+    return newRule;
+  }, []);
+
+  const updateCustomRule = useCallback((id, updates) => {
+    setCustomRules(prev => prev.map(r => r.id === id ? { ...r, ...updates } : r));
+  }, []);
+
+  const deleteCustomRule = useCallback((id) => {
+    setCustomRules(prev => prev.filter(r => r.id !== id));
+  }, []);
 
   const getParticipantById = useCallback((id) => {
     return participants.find(p => p.id === parseInt(id));
   }, [participants]);
 
-  const getTeamById = useCallback((id) => {
-    return TEAMS.find(t => t.id === id);
-  }, []);
-
-  const getTeamMembers = useCallback((teamId) => {
-    return participants.filter(p => p.teamId === teamId);
-  }, [participants]);
+  const getTeamById   = useCallback((id) => TEAMS.find(t => t.id === id), []);
+  const getTeamMembers = useCallback((teamId) => participants.filter(p => p.teamId === teamId), [participants]);
 
   const value = {
     // State
     participants,
     rawParticipants,
-    bonusSettings,
+    customRules,
+    activeRules,
     competitionEndDate,
+    lastUpdated: participantsData.lastUpdated,
     teams: TEAMS,
     allCertificates: ALL_CERTIFICATES,
     // Computed
@@ -143,11 +142,10 @@ export function CompetitionProvider({ children }) {
     participantsByTeam,
     stats,
     levelDistribution,
-    // Actions
-    toggleBonus,
-    updateBonusSettings,
-    updateParticipant,
-    addParticipant,
+    // Rule actions
+    addCustomRule,
+    updateCustomRule,
+    deleteCustomRule,
     // Helpers
     getParticipantById,
     getTeamById,

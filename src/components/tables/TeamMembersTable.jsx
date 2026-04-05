@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Badge from '../common/Badge';
-import { formatNumber, getMedalEmoji } from '../../utils/helpers';
+import { formatNumber, getMedalEmoji, assignRanks } from '../../utils/helpers';
 import { sortByPoints } from '../../utils/helpers';
 
 export default function TeamMembersTable({ members, teamColor }) {
-  const sorted = sortByPoints(members);
+  const sorted = assignRanks(sortByPoints(members));
 
   return (
     <div className="card overflow-hidden">
@@ -22,15 +22,15 @@ export default function TeamMembersTable({ members, teamColor }) {
             </tr>
           </thead>
           <tbody>
-            {sorted.map((member, i) => (
+            {sorted.map((member) => (
               <tr
                 key={member.id}
                 className="table-row-hover transition-colors"
                 style={{ borderBottom: '1px solid #FFFFFF' }}
               >
                 <td className="px-4 py-3 text-center">
-                  <span className="text-sm font-bold" style={{ color: i < 3 ? '#FBBC04' : '#5F6368' }}>
-                    {getMedalEmoji(i + 1)}
+                  <span className="text-sm font-bold" style={{ color: member.rank <= 3 ? '#FBBC04' : '#5F6368' }}>
+                    {getMedalEmoji(member.rank)}
                   </span>
                 </td>
                 <td className="px-4 py-3">

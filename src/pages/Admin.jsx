@@ -1,33 +1,61 @@
 import React, { useState } from 'react';
-import { Settings, Lock, ToggleLeft, ToggleRight, UserPlus, Calendar, Users } from 'lucide-react';
+import { Settings, Lock, Plus, Trash2, Edit2, Check, X } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
-import { TEAMS } from '../data/mockData';
 
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD = 'Adminayse123';
+
+const MULTIPLIER_OPTIONS = [
+  { label: '%20',  value: '20'  },
+  { label: '%50',  value: '50'  },
+  { label: '%100', value: '100' },
+  { label: '%200', value: '200' },
+];
+
+const SCOPE_OPTIONS = [
+  { value: 'course',      label: 'Course' },
+  { value: 'lab',         label: 'Lab' },
+  { value: 'certificate', label: 'Sertifika' },
+];
+
+const EMPTY_FORM = {
+  name:        '',
+  description: '',
+  startDate:   '',
+  endDate:     '',
+  scopes:      [],
+  multiplier:  '20',
+};
+
+function ScopeCheckbox({ value, label, checked, onChange }) {
+  return (
+    <label className="flex items-center gap-2 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={e => onChange(value, e.target.checked)}
+        className="w-4 h-4 rounded"
+        style={{ accentColor: '#4285F4' }}
+      />
+      <span className="text-sm" style={{ color: '#202124' }}>{label}</span>
+    </label>
+  );
+}
 
 export default function Admin() {
-  const [authenticated, setAuthenticated] = useState(() => {
-    return sessionStorage.getItem('adminAuth') === 'true';
-  });
-  const [password, setPassword] = useState('');
+  const [authenticated, setAuthenticated] = useState(
+    () => sessionStorage.getItem('adminAuth') === 'true'
+  );
+  const [password, setPassword]     = useState('');
   const [loginError, setLoginError] = useState('');
-  const [activeTab, setActiveTab] = useState('bonuses');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const {
-    bonusSettings,
-    toggleBonus,
-    updateBonusSettings,
-    addParticipant,
-  } = useCompetition();
+  // Rule form state
+  const [showForm, setShowForm]     = useState(false);
+  const [form, setForm]             = useState(EMPTY_FORM);
+  const [editingId, setEditingId]   = useState(null);
+  const [formError, setFormError]   = useState('');
 
-  // New participant form state
-  const [newParticipant, setNewParticipant] = useState({
-    name: '',
-    teamId: 'MSE',
-    coursesLabs: 0,
-    certificates: [],
-  });
+  const { customRules, addCustomRule, updateCustomRule, deleteCustomRule, lastUpdated } = useCompetition();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -50,22 +78,80 @@ export default function Admin() {
     setTimeout(() => setSuccessMsg(''), 3000);
   };
 
-  const handleAddParticipant = (e) => {
-    e.preventDefault();
-    addParticipant({
-      ...newParticipant,
-      coursesLabs: parseInt(newParticipant.coursesLabs) || 0,
-    });
-    showSuccess(`${newParticipant.name} başarıyla eklendi!`);
-    setNewParticipant({ name: '', teamId: 'MSE', coursesLabs: 0, certificates: [] });
+  const handleScopeChange = (value, checked) => {
+    setForm(prev => ({
+      ...prev,
+      scopes: checked
+        ? [...prev.scopes, value]
+        : prev.scopes.filter(s => s !== value),
+    }));
   };
 
+  const validateForm = () => {
+    if (!form.name.trim())         return 'Kural ismi zorunludur.';
+    if (!form.startDate)           return 'Başlangıç tarihi zorunludur.';
+    if (!form.endDate)             return 'Bitiş tarihi zorunludur.';
+    if (form.startDate > form.endDate) return 'Başlangıç tarihi bitiş tarihinden önce olmalıdır.';
+    if (form.scopes.length === 0)  return 'En az bir kapsam seçilmelidir.';
+    return null;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const err = validateForm();
+    if (err) { setFormError(err); return; }
+    setFormError('');
+
+    if (editingId) {
+      updateCustomRule(editingId, form);
+      showSuccess('Kural güncellendi.');
+      setEditingId(null);
+    } else {
+      addCustomRule(form);
+      showSuccess('Kural eklendi.');
+    }
+    setForm(EMPTY_FORM);
+    setShowForm(false);
+  };
+
+  const handleEdit = (rule) => {
+    setForm({
+      name:        rule.name,
+      description: rule.description || '',
+      startDate:   rule.startDate,
+      endDate:     rule.endDate,
+      scopes:      rule.scopes || [],
+      multiplier:  rule.multiplier,
+    });
+    setEditingId(rule.id);
+    setShowForm(true);
+    setFormError('');
+  };
+
+  const handleCancel = () => {
+    setForm(EMPTY_FORM);
+    setEditingId(null);
+    setShowForm(false);
+    setFormError('');
+  };
+
+  const handleDelete = (id) => {
+    deleteCustomRule(id);
+    showSuccess('Kural silindi.');
+  };
+
+  const handleToggle = (rule) => {
+    updateCustomRule(rule.id, { active: !rule.active });
+  };
+
+  // ── Login screen ─────────────────────────────────────────────────────────────
   if (!authenticated) {
     return (
       <div className="p-4 lg:p-6 flex items-center justify-center min-h-screen" style={{ background: '#F8F9FA' }}>
         <div className="card p-8 w-full max-w-sm">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(234,67,53,0.15)', border: '1px solid rgba(234,67,53,0.3)' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'rgba(234,67,53,0.15)', border: '1px solid rgba(234,67,53,0.3)' }}>
               <Lock size={20} color="#EA4335" />
             </div>
             <div>
@@ -73,7 +159,6 @@ export default function Admin() {
               <p className="text-xs" style={{ color: '#5F6368' }}>Giriş yapın</p>
             </div>
           </div>
-
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm mb-1.5" style={{ color: '#5F6368' }}>Şifre</label>
@@ -83,11 +168,7 @@ export default function Admin() {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Şifreyi girin..."
                 className="w-full px-4 py-2.5 rounded-lg text-sm outline-none"
-                style={{
-                  background: '#DADCE0',
-                  border: '1px solid #DADCE0',
-                  color: '#202124',
-                }}
+                style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
                 onFocus={e => e.target.style.borderColor = '#4285F4'}
                 onBlur={e => e.target.style.borderColor = '#DADCE0'}
               />
@@ -98,7 +179,7 @@ export default function Admin() {
             <button
               type="submit"
               className="w-full py-2.5 rounded-lg font-semibold text-sm transition-opacity hover:opacity-90"
-              style={{ background: '#4285F4', color: '#202124' }}
+              style={{ background: '#4285F4', color: '#FFFFFF' }}
             >
               Giriş Yap
             </button>
@@ -108,13 +189,7 @@ export default function Admin() {
     );
   }
 
-  const tabs = [
-    { id: 'bonuses', label: 'Bonus Yönetimi', icon: ToggleRight },
-    { id: 'participants', label: 'Katılımcı Ekle', icon: UserPlus },
-    { id: 'competition', label: 'Yarışma Ayarları', icon: Calendar },
-    { id: 'import', label: 'CSV İçe Aktar', icon: Users },
-  ];
-
+  // ── Admin panel ───────────────────────────────────────────────────────────────
   return (
     <div className="p-6 lg:p-10 space-y-6">
       {/* Header */}
@@ -123,7 +198,11 @@ export default function Admin() {
           <Settings size={24} color="#4285F4" />
           <div>
             <h1 className="text-2xl font-bold" style={{ color: '#202124' }}>Yönetim Paneli</h1>
-            <p className="text-sm" style={{ color: '#5F6368' }}>Yarışma yönetimi</p>
+            {lastUpdated && (
+              <p className="text-xs" style={{ color: '#5F6368' }}>
+                Son veri güncellemesi: {new Date(lastUpdated).toLocaleString('tr-TR')}
+              </p>
+            )}
           </div>
         </div>
         <button
@@ -143,255 +222,238 @@ export default function Admin() {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-            style={{
-              background: activeTab === tab.id ? '#4285F4' : '#FFFFFF',
-              color: activeTab === tab.id ? '#FFFFFF' : '#5F6368',
-              border: activeTab === tab.id ? '1px solid #4285F4' : '1px solid #DADCE0',
-            }}
-          >
-            <tab.icon size={15} />
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Content */}
-      {activeTab === 'bonuses' && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold" style={{ color: '#202124' }}>Bonus Yönetimi</h2>
-
-          {/* Patron Çıldırdı */}
-          <div className="card p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold" style={{ color: '#202124' }}>🎉 Patron Çıldırdı</h3>
-                <p className="text-xs mt-1" style={{ color: '#5F6368' }}>Aktif dönemde tüm puan +%50 artar</p>
-              </div>
-              <button
-                onClick={() => toggleBonus('patronCildirdi')}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all"
-                style={{
-                  background: bonusSettings.patronCildirdi.active ? 'rgba(52,168,83,0.2)' : 'rgba(234,67,53,0.15)',
-                  color: bonusSettings.patronCildirdi.active ? '#34A853' : '#EA4335',
-                  border: `1px solid ${bonusSettings.patronCildirdi.active ? 'rgba(52,168,83,0.4)' : 'rgba(234,67,53,0.3)'}`,
-                }}
-              >
-                {bonusSettings.patronCildirdi.active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
-                {bonusSettings.patronCildirdi.active ? 'Aktif' : 'Pasif'}
-              </button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs mb-1" style={{ color: '#5F6368' }}>Başlangıç Tarihi</label>
-                <input
-                  type="date"
-                  value={bonusSettings.patronCildirdi.startDate}
-                  onChange={e => updateBonusSettings('patronCildirdi', { startDate: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                />
-              </div>
-              <div>
-                <label className="block text-xs mb-1" style={{ color: '#5F6368' }}>Bitiş Tarihi</label>
-                <input
-                  type="date"
-                  value={bonusSettings.patronCildirdi.endDate}
-                  onChange={e => updateBonusSettings('patronCildirdi', { endDate: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Double Point */}
-          <div className="card p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold" style={{ color: '#202124' }}>🔥 Çifte Puan</h3>
-                <p className="text-xs mt-1" style={{ color: '#5F6368' }}>Aktif dönemde sertifika puanları 2 katına çıkar</p>
-              </div>
-              <button
-                onClick={() => toggleBonus('doublePoint')}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all"
-                style={{
-                  background: bonusSettings.doublePoint.active ? 'rgba(52,168,83,0.2)' : 'rgba(234,67,53,0.15)',
-                  color: bonusSettings.doublePoint.active ? '#34A853' : '#EA4335',
-                  border: `1px solid ${bonusSettings.doublePoint.active ? 'rgba(52,168,83,0.4)' : 'rgba(234,67,53,0.3)'}`,
-                }}
-              >
-                {bonusSettings.doublePoint.active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
-                {bonusSettings.doublePoint.active ? 'Aktif' : 'Pasif'}
-              </button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs mb-1" style={{ color: '#5F6368' }}>Başlangıç Tarihi</label>
-                <input
-                  type="date"
-                  value={bonusSettings.doublePoint.startDate}
-                  onChange={e => updateBonusSettings('doublePoint', { startDate: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                />
-              </div>
-              <div>
-                <label className="block text-xs mb-1" style={{ color: '#5F6368' }}>Bitiş Tarihi</label>
-                <input
-                  type="date"
-                  value={bonusSettings.doublePoint.endDate}
-                  onChange={e => updateBonusSettings('doublePoint', { endDate: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Add rule button */}
+      {!showForm && (
+        <button
+          onClick={() => { setShowForm(true); setEditingId(null); setForm(EMPTY_FORM); }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-opacity hover:opacity-90"
+          style={{ background: '#4285F4', color: '#FFFFFF' }}
+        >
+          <Plus size={16} />
+          Yeni Kural Ekle
+        </button>
       )}
 
-      {activeTab === 'participants' && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold" style={{ color: '#202124' }}>Katılımcı Ekle</h2>
-          <div className="card p-6">
-            <form onSubmit={handleAddParticipant} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1.5" style={{ color: '#5F6368' }}>Ad Soyad *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newParticipant.name}
-                    onChange={e => setNewParticipant(p => ({ ...p, name: e.target.value }))}
-                    placeholder="Ahmet Yılmaz"
-                    className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-                    style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                    onFocus={e => e.target.style.borderColor = '#4285F4'}
-                    onBlur={e => e.target.style.borderColor = '#DADCE0'}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1.5" style={{ color: '#5F6368' }}>Takım *</label>
-                  <select
-                    required
-                    value={newParticipant.teamId}
-                    onChange={e => setNewParticipant(p => ({ ...p, teamId: e.target.value }))}
-                    className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-                    style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                  >
-                    {TEAMS.map(t => (
-                      <option key={t.id} value={t.id}>{t.id} - {t.fullName}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm mb-1.5" style={{ color: '#5F6368' }}>Tamamlanan Kurs/Lab</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={newParticipant.coursesLabs}
-                    onChange={e => setNewParticipant(p => ({ ...p, coursesLabs: e.target.value }))}
-                    className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-                    style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                    onFocus={e => e.target.style.borderColor = '#4285F4'}
-                    onBlur={e => e.target.style.borderColor = '#DADCE0'}
-                  />
-                  <p className="text-xs mt-1" style={{ color: '#5F6368' }}>Her kurs/lab = 20 puan</p>
-                </div>
+      {/* Rule form */}
+      {showForm && (
+        <div className="card p-6 space-y-4">
+          <h2 className="font-bold text-lg" style={{ color: '#202124' }}>
+            {editingId ? 'Kuralı Düzenle' : 'Yeni Kural Ekle'}
+          </h2>
+
+          {formError && (
+            <p className="text-sm px-3 py-2 rounded-lg"
+              style={{ background: 'rgba(234,67,53,0.1)', color: '#EA4335' }}>
+              {formError}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name */}
+            <div>
+              <label className="block text-sm mb-1" style={{ color: '#5F6368' }}>Kural İsmi *</label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                placeholder="örn. Yaz Fırtınası"
+                className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
+                onFocus={e => e.target.style.borderColor = '#4285F4'}
+                onBlur={e => e.target.style.borderColor = '#DADCE0'}
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm mb-1" style={{ color: '#5F6368' }}>Kural Açıklama</label>
+              <textarea
+                value={form.description}
+                onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
+                placeholder="Bu dönemde kurs puanları artırıldı..."
+                rows={2}
+                className="w-full px-3 py-2.5 rounded-lg text-sm outline-none resize-none"
+                style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
+                onFocus={e => e.target.style.borderColor = '#4285F4'}
+                onBlur={e => e.target.style.borderColor = '#DADCE0'}
+              />
+            </div>
+
+            {/* Date range */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm mb-1" style={{ color: '#5F6368' }}>Başlangıç Tarihi *</label>
+                <input
+                  type="date"
+                  value={form.startDate}
+                  onChange={e => setForm(p => ({ ...p, startDate: e.target.value }))}
+                  className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
+                />
               </div>
+              <div>
+                <label className="block text-sm mb-1" style={{ color: '#5F6368' }}>Bitiş Tarihi *</label>
+                <input
+                  type="date"
+                  value={form.endDate}
+                  onChange={e => setForm(p => ({ ...p, endDate: e.target.value }))}
+                  className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
+                />
+              </div>
+            </div>
+
+            {/* Scopes */}
+            <div>
+              <label className="block text-sm mb-2" style={{ color: '#5F6368' }}>Kapsam * (biri ya da birden fazlası)</label>
+              <div className="flex flex-wrap gap-4">
+                {SCOPE_OPTIONS.map(opt => (
+                  <ScopeCheckbox
+                    key={opt.value}
+                    value={opt.value}
+                    label={opt.label}
+                    checked={form.scopes.includes(opt.value)}
+                    onChange={handleScopeChange}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Multiplier */}
+            <div>
+              <label className="block text-sm mb-2" style={{ color: '#5F6368' }}>Çarpan</label>
+              <div className="flex flex-wrap gap-2">
+                {MULTIPLIER_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setForm(p => ({ ...p, multiplier: opt.value }))}
+                    className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                    style={{
+                      background: form.multiplier === opt.value ? '#4285F4' : '#DADCE0',
+                      color:      form.multiplier === opt.value ? '#FFFFFF' : '#202124',
+                    }}
+                  >
+                    +{opt.label}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs mt-1" style={{ color: '#5F6368' }}>
+                Seçilen kapsam puanları bu oran kadar artırılır.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-lg font-semibold text-sm transition-opacity hover:opacity-90"
-                style={{ background: '#4285F4', color: '#202124' }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-opacity hover:opacity-90"
+                style={{ background: '#34A853', color: '#FFFFFF' }}
               >
-                Katılımcı Ekle
+                <Check size={15} />
+                {editingId ? 'Güncelle' : 'Kaydet'}
               </button>
-            </form>
-          </div>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-opacity hover:opacity-80"
+                style={{ background: '#DADCE0', color: '#5F6368' }}
+              >
+                <X size={15} />
+                İptal
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
-      {activeTab === 'competition' && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold" style={{ color: '#202124' }}>Yarışma Ayarları</h2>
-          <div className="card p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm mb-1.5" style={{ color: '#5F6368' }}>Yarışma Başlangıç Tarihi</label>
-                <input
-                  type="date"
-                  defaultValue="2025-10-01"
-                  className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                />
-              </div>
-              <div>
-                <label className="block text-sm mb-1.5" style={{ color: '#5F6368' }}>Yarışma Bitiş Tarihi</label>
-                <input
-                  type="date"
-                  defaultValue="2026-04-30"
-                  className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-                  style={{ background: '#DADCE0', border: '1px solid #DADCE0', color: '#202124' }}
-                />
-              </div>
-            </div>
-            <p className="text-xs mt-3" style={{ color: '#5F6368' }}>
-              Not: Bu demo versiyonunda tarihler kaydedilmez. Gerçek API entegrasyonu için backend bağlantısı gereklidir.
-            </p>
-          </div>
+      {/* Rules list */}
+      <div className="space-y-3">
+        <h2 className="font-bold text-base" style={{ color: '#202124' }}>
+          Mevcut Kurallar ({customRules.length})
+        </h2>
 
-          {/* Team management */}
-          <div className="card p-6">
-            <h3 className="font-semibold mb-3" style={{ color: '#202124' }}>Takım Durumu</h3>
-            <div className="space-y-2">
-              {TEAMS.map(team => (
-                <div key={team.id} className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#F8F9FA' }}>
-                  <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full" style={{ background: team.color }} />
-                    <span className="font-medium text-sm" style={{ color: '#202124' }}>{team.id}</span>
-                    <span className="text-xs" style={{ color: '#5F6368' }}>{team.fullName}</span>
+        {customRules.length === 0 && (
+          <div className="card p-8 text-center" style={{ color: '#5F6368' }}>
+            <p className="text-sm">Henüz kural eklenmemiş.</p>
+          </div>
+        )}
+
+        {customRules.map(rule => {
+          const today     = new Date().toISOString().slice(0, 10);
+          const isActive  = rule.active && rule.startDate <= today && rule.endDate >= today;
+          const isPending = rule.active && rule.startDate > today;
+          const isExpired = rule.endDate < today;
+
+          let statusLabel = 'Pasif';
+          let statusColor = '#5F6368';
+          let statusBg    = 'rgba(95,99,104,0.1)';
+          if (isExpired)       { statusLabel = 'Süresi Doldu'; statusColor = '#EA4335'; statusBg = 'rgba(234,67,53,0.1)'; }
+          else if (isActive)   { statusLabel = 'Aktif';        statusColor = '#34A853'; statusBg = 'rgba(52,168,83,0.15)'; }
+          else if (isPending)  { statusLabel = 'Beklemede';    statusColor = '#FBBC04'; statusBg = 'rgba(251,188,4,0.15)'; }
+
+          const scopeLabels = (rule.scopes || [])
+            .map(s => SCOPE_OPTIONS.find(o => o.value === s)?.label || s)
+            .join(', ');
+
+          return (
+            <div key={rule.id} className="card p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="font-semibold text-sm" style={{ color: '#202124' }}>{rule.name}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                      style={{ background: statusBg, color: statusColor }}>
+                      {statusLabel}
+                    </span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                      style={{ background: 'rgba(66,133,244,0.12)', color: '#4285F4' }}>
+                      +{rule.multiplier}%
+                    </span>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(52,168,83,0.15)', color: '#34A853' }}>Aktif</span>
+                  {rule.description && (
+                    <p className="text-xs mb-2" style={{ color: '#5F6368' }}>{rule.description}</p>
+                  )}
+                  <div className="flex flex-wrap gap-3 text-xs" style={{ color: '#5F6368' }}>
+                    <span>📅 {rule.startDate} – {rule.endDate}</span>
+                    <span>🎯 {scopeLabels}</span>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {activeTab === 'import' && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold" style={{ color: '#202124' }}>CSV İçe Aktarma</h2>
-          <div className="card p-8 text-center" style={{ borderStyle: 'dashed', borderWidth: '2px', borderColor: '#DADCE0' }}>
-            <div className="text-4xl mb-3">📊</div>
-            <h3 className="font-semibold mb-2" style={{ color: '#202124' }}>CSV Dosyası Yükle</h3>
-            <p className="text-sm mb-4" style={{ color: '#5F6368' }}>
-              Katılımcı verilerini CSV formatında yükleyin
-            </p>
-            <div className="text-xs p-3 rounded-lg mb-4 text-left" style={{ background: '#F8F9FA', color: '#5F6368' }}>
-              <p className="font-semibold mb-1" style={{ color: '#202124' }}>Beklenen CSV Formatı:</p>
-              <code>ad_soyad,takim_id,kurs_lab_sayisi,sertifika_id1|sertifika_id2</code>
-              <br />
-              <code>Ahmet Yılmaz,MSE,3,cloud-digital-leader|cloud-engineer</code>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {/* Active toggle */}
+                  <button
+                    onClick={() => handleToggle(rule)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+                    style={{
+                      background: rule.active ? 'rgba(52,168,83,0.15)' : 'rgba(234,67,53,0.1)',
+                      color:      rule.active ? '#34A853' : '#EA4335',
+                    }}
+                  >
+                    {rule.active ? 'Aktif' : 'Pasif'}
+                  </button>
+                  {/* Edit */}
+                  <button
+                    onClick={() => handleEdit(rule)}
+                    className="p-1.5 rounded-lg transition-colors hover:opacity-80"
+                    style={{ background: 'rgba(66,133,244,0.1)', color: '#4285F4' }}
+                  >
+                    <Edit2 size={14} />
+                  </button>
+                  {/* Delete */}
+                  <button
+                    onClick={() => handleDelete(rule.id)}
+                    className="p-1.5 rounded-lg transition-colors hover:opacity-80"
+                    style={{ background: 'rgba(234,67,53,0.1)', color: '#EA4335' }}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
             </div>
-            <button
-              className="px-6 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed opacity-50"
-              style={{ background: '#4285F4', color: '#202124' }}
-              disabled
-            >
-              Dosya Seç (Yakında)
-            </button>
-            <p className="text-xs mt-2" style={{ color: '#5F6368' }}>Bu özellik gerçek API entegrasyonu gerektirir</p>
-          </div>
-        </div>
-      )}
+          );
+        })}
+      </div>
     </div>
   );
 }

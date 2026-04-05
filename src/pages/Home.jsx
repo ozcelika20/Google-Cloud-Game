@@ -10,7 +10,7 @@ import LeaderboardTable from '../components/tables/LeaderboardTable';
 import { REWARDS, REWARD_CONDITIONS } from '../data/mockData';
 
 export default function Home() {
-  const { stats, teamScores, leaderboard, bonusSettings } = useCompetition();
+  const { stats, teamScores, leaderboard, activeRules } = useCompetition();
 
   return (
     <div className="p-8 space-y-8">
@@ -26,18 +26,12 @@ export default function Home() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          {bonusSettings.patronCildirdi.active && (
-            <span className="text-xs px-3 py-1.5 rounded-full font-semibold pulse-animation"
-              style={{ background: 'rgba(52,168,83,0.12)', color: '#34A853', border: '1px solid rgba(52,168,83,0.3)' }}>
-              🎉 Patron Çıldırdı Aktif
+          {activeRules.map(rule => (
+            <span key={rule.id} className="text-xs px-3 py-1.5 rounded-full font-semibold pulse-animation"
+              style={{ background: 'rgba(66,133,244,0.12)', color: '#4285F4', border: '1px solid rgba(66,133,244,0.3)' }}>
+              🎉 {rule.name} Aktif
             </span>
-          )}
-          {bonusSettings.doublePoint.active && (
-            <span className="text-xs px-3 py-1.5 rounded-full font-semibold pulse-animation"
-              style={{ background: 'rgba(234,67,53,0.12)', color: '#EA4335', border: '1px solid rgba(234,67,53,0.3)' }}>
-              🔥 Çifte Puan Aktif
-            </span>
-          )}
+          ))}
         </div>
       </div>
 

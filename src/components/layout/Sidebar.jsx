@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Trophy, Award, Settings, Cloud, Pin } from 'lucide-react';
+import { LayoutDashboard, Trophy, Award, Cloud, Pin } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Genel Bakış', icon: LayoutDashboard, exact: true },
   { path: '/leaderboard', label: 'Sıralama', icon: Trophy },
   { path: '/certificates', label: 'Sertifikalar', icon: Award },
-  { path: '/admin', label: 'Yönetim Paneli', icon: Settings },
 ];
 
 const TEAM_LINKS = [
