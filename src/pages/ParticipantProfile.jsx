@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Award, BookOpen, TrendingUp, Star } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
@@ -27,6 +27,25 @@ export default function ParticipantProfile() {
   const rank = getRank(participant.id, leaderboard);
   const tier = resolveTitle(participant.totalPoints);
   const nextTier = getNextTierInfo(participant.totalPoints);
+
+  const MONTHS = [
+    { key: '2026-01', label: 'Ocak' },
+    { key: '2026-02', label: 'Şubat' },
+    { key: '2026-03', label: 'Mart' },
+    { key: '2026-04', label: 'Nisan' },
+    { key: '2026-05', label: 'Mayıs' },
+    { key: '2026-06', label: 'Haziran' },
+    { key: '2026-07', label: 'Temmuz' },
+    { key: '2026-08', label: 'Ağustos' },
+    { key: '2026-09', label: 'Eylül' },
+    { key: '2026-10', label: 'Ekim' },
+    { key: '2026-11', label: 'Kasım' },
+  ];
+
+  const monthlyChartData = MONTHS.map(({ key, label }) => {
+    const histEntry = participant.monthlyHistory?.find(h => h.month === key);
+    return { month: label, points: histEntry ? histEntry.points : 0 };
+  });
 
   const earnedCerts = ALL_CERTIFICATES.filter(c => participant.certificates?.includes(c.id));
   const certMap = {};
@@ -134,11 +153,10 @@ export default function ParticipantProfile() {
       </div>
 
       {/* Monthly Progress Chart */}
-      {participant.monthlyHistory?.length > 0 && (
-        <div className="card p-6">
-          <h3 className="font-semibold mb-4" style={{ color: '#202124' }}>Aylık Puan Gelişimi</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <LineChart data={participant.monthlyHistory}>
+      <div className="card p-6">
+        <h3 className="font-semibold mb-4" style={{ color: '#202124' }}>Aylık Puan Gelişimi</h3>
+        <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={monthlyChartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#DADCE0" />
               <XAxis dataKey="month" tick={{ fill: '#5F6368', fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: '#5F6368', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => formatNumber(v)} width={50} />
@@ -150,8 +168,7 @@ export default function ParticipantProfile() {
               <Line type="monotone" dataKey="points" stroke={team?.color || '#4285F4'} strokeWidth={2} dot={{ fill: team?.color || '#4285F4', r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
-        </div>
-      )}
+      </div>
 
       {/* Certificates */}
       {earnedCerts.length > 0 && (

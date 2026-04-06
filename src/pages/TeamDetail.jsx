@@ -7,7 +7,19 @@ import { formatNumber } from '../utils/helpers';
 import { hasKusursuzBirlik, hasBulutOrdusu } from '../utils/pointCalculator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım'];
+const MONTHS = [
+  { key: '2026-01', label: 'Ocak' },
+  { key: '2026-02', label: 'Şubat' },
+  { key: '2026-03', label: 'Mart' },
+  { key: '2026-04', label: 'Nisan' },
+  { key: '2026-05', label: 'Mayıs' },
+  { key: '2026-06', label: 'Haziran' },
+  { key: '2026-07', label: 'Temmuz' },
+  { key: '2026-08', label: 'Ağustos' },
+  { key: '2026-09', label: 'Eylül' },
+  { key: '2026-10', label: 'Ekim' },
+  { key: '2026-11', label: 'Kasım' },
+];
 
 export default function TeamDetail() {
   const { teamId } = useParams();
@@ -23,11 +35,12 @@ export default function TeamDetail() {
   );
 
   const monthlyData = useMemo(() => {
-    return MONTHS.map((month, idx) => {
+    return MONTHS.map(({ key, label }) => {
       const total = teamMembers.reduce((sum, m) => {
-        return sum + (m.monthlyHistory?.[idx]?.points || 0);
+        const histEntry = m.monthlyHistory?.find(h => h.month === key);
+        return sum + (histEntry ? histEntry.points : 0);
       }, 0);
-      return { month, total };
+      return { month: label, total };
     });
   }, [teamMembers]);
 

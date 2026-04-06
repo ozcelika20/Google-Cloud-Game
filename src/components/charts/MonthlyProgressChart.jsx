@@ -13,7 +13,19 @@ const TEAM_COLORS = {
   DPM: '#A142F4',
 };
 
-const MONTHS = ['Ekim', 'Kasım', 'Aralık', 'Ocak', 'Şubat', 'Mart'];
+const MONTHS = [
+  { key: '2026-01', label: 'Ocak' },
+  { key: '2026-02', label: 'Şubat' },
+  { key: '2026-03', label: 'Mart' },
+  { key: '2026-04', label: 'Nisan' },
+  { key: '2026-05', label: 'Mayıs' },
+  { key: '2026-06', label: 'Haziran' },
+  { key: '2026-07', label: 'Temmuz' },
+  { key: '2026-08', label: 'Ağustos' },
+  { key: '2026-09', label: 'Eylül' },
+  { key: '2026-10', label: 'Ekim' },
+  { key: '2026-11', label: 'Kasım' },
+];
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -33,12 +45,12 @@ export default function MonthlyProgressChart() {
   const { participants, teams } = useCompetition();
 
   const chartData = useMemo(() => {
-    return MONTHS.map((month, idx) => {
-      const entry = { month };
+    return MONTHS.map(({ key, label }) => {
+      const entry = { month: label };
       teams.forEach(team => {
         const teamMembers = participants.filter(p => p.teamId === team.id);
         const totalForMonth = teamMembers.reduce((sum, p) => {
-          const histEntry = p.monthlyHistory?.[idx];
+          const histEntry = p.monthlyHistory?.find(h => h.month === key);
           return sum + (histEntry ? histEntry.points : 0);
         }, 0);
         entry[team.id] = totalForMonth;
