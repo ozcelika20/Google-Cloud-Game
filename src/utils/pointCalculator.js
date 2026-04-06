@@ -62,11 +62,17 @@ export function calculateParticipantPoints(participant, customRules, allParticip
   let total = coursePoints + labPoints + certPoints;
 
   // 4. İstikrar Puanı: previous month → current month ≥ +50% → ×1.2
+  // Only applies when the two entries are consecutive months.
   const history = participant.monthlyHistory || [];
   if (history.length >= 2) {
-    const prev = history[history.length - 2].points;
-    const curr = history[history.length - 1].points;
-    if (prev > 0 && curr >= prev * 1.5) {
+    const prevEntry = history[history.length - 2];
+    const currEntry = history[history.length - 1];
+    const [prevYear, prevMonth] = prevEntry.month.split('-').map(Number);
+    const [currYear, currMonth] = currEntry.month.split('-').map(Number);
+    const isConsecutive =
+      (currYear === prevYear && currMonth === prevMonth + 1) ||
+      (currYear === prevYear + 1 && prevMonth === 12 && currMonth === 1);
+    if (isConsecutive && prevEntry.points > 0 && currEntry.points >= prevEntry.points * 1.5) {
       total = Math.floor(total * 1.2);
     }
   }
