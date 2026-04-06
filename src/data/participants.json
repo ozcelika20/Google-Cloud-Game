@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-05T19:51:49.937Z",
+  "lastUpdated": "2026-04-06T11:16:07.771Z",
   "participants": [
     {
       "id": 1,
@@ -23,15 +23,11 @@
       "lastName": "ARTUN",
       "email": "cagri.artun@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 2,
-      "labs": 4,
-      "coursesLabs": 6,
+      "courses": 1,
+      "labs": 0,
+      "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
-        {
-          "month": "2025-12",
-          "points": 100
-        },
         {
           "month": "2026-03",
           "points": 20
@@ -570,8 +566,15 @@
       "courses": 0,
       "labs": 0,
       "coursesLabs": 0,
-      "certificates": [],
-      "monthlyHistory": [],
+      "certificates": [
+        "cloud-digital-leader"
+      ],
+      "monthlyHistory": [
+        {
+          "month": "2026-03",
+          "points": 150
+        }
+      ],
       "joinDate": "2025-10-01",
       "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=RATIPCANUYSAL&backgroundColor=1A1D2E&textColor=ffffff"
     },
@@ -1072,18 +1075,16 @@
       "lastName": "YILDIRIM",
       "email": "kaan.yildirim@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 6,
+      "courses": 1,
       "labs": 0,
-      "coursesLabs": 6,
-      "certificates": [],
+      "coursesLabs": 1,
+      "certificates": [
+        "gen-ai-leader"
+      ],
       "monthlyHistory": [
         {
-          "month": "2025-11",
-          "points": 100
-        },
-        {
           "month": "2026-03",
-          "points": 20
+          "points": 170
         }
       ],
       "joinDate": "2025-10-01",
