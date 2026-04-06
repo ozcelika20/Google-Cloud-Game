@@ -1,18 +1,71 @@
 import React, { useState, useMemo } from 'react';
-import { Trophy } from 'lucide-react';
+import { Trophy, Calendar, LayoutList } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
 import LeaderboardTable from '../components/tables/LeaderboardTable';
 import SearchBar from '../components/common/SearchBar';
 
 const TEAM_FILTERS = ['Tümü', 'MSE', 'WSE', 'DCBE', 'ECCBE', 'DPM'];
 
+const MONTHS = [
+  { key: '2026-01', label: 'Ocak 2026' },
+  { key: '2026-02', label: 'Şubat 2026' },
+  { key: '2026-03', label: 'Mart 2026' },
+  { key: '2026-04', label: 'Nisan 2026' },
+  { key: '2026-05', label: 'Mayıs 2026' },
+  { key: '2026-06', label: 'Haziran 2026' },
+  { key: '2026-07', label: 'Temmuz 2026' },
+  { key: '2026-08', label: 'Ağustos 2026' },
+  { key: '2026-09', label: 'Eylül 2026' },
+  { key: '2026-10', label: 'Ekim 2026' },
+  { key: '2026-11', label: 'Kasım 2026' },
+];
+
 export default function Leaderboard() {
-  const { leaderboard } = useCompetition();
+  const { leaderboard, rawParticipants } = useCompetition();
   const [search, setSearch] = useState('');
   const [teamFilter, setTeamFilter] = useState('Tümü');
+  const [dateMode, setDateMode] = useState('all'); // 'all' | 'monthly'
+
+  // Find months that have any data
+  const availableMonths = useMemo(() => {
+    const monthSet = new Set();
+    rawParticipants.forEach(p => {
+      (p.monthlyHistory || []).forEach(h => {
+        if (h.points > 0) monthSet.add(h.month);
+      });
+    });
+    return MONTHS.filter(m => monthSet.has(m.key));
+  }, [rawParticipants]);
+
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    // default: last available month
+    return null;
+  });
+
+  // When switching to monthly mode, auto-select the latest available month
+  const handleDateMode = (mode) => {
+    setDateMode(mode);
+    if (mode === 'monthly' && !selectedMonth && availableMonths.length > 0) {
+      setSelectedMonth(availableMonths[availableMonths.length - 1].key);
+    }
+  };
+
+  // Build the ranked list based on mode
+  const rankedList = useMemo(() => {
+    if (dateMode === 'monthly' && selectedMonth) {
+      // Rank by monthlyHistory points for the selected month
+      return rawParticipants
+        .map(p => {
+          const entry = (p.monthlyHistory || []).find(h => h.month === selectedMonth);
+          return { ...p, totalPoints: entry ? entry.points : 0 };
+        })
+        .sort((a, b) => b.totalPoints - a.totalPoints);
+    }
+    return leaderboard;
+  }, [dateMode, selectedMonth, leaderboard, rawParticipants]);
 
   const filtered = useMemo(() => {
-    let result = leaderboard;
+    let result = rankedList;
     if (teamFilter !== 'Tümü') {
       result = result.filter(p => p.teamId === teamFilter);
     }
@@ -21,10 +74,12 @@ export default function Leaderboard() {
       result = result.filter(p => p.name.toLowerCase().includes(q));
     }
     return result;
-  }, [leaderboard, teamFilter, search]);
+  }, [rankedList, teamFilter, search]);
 
-  // Top 3
-  const top3 = leaderboard.slice(0, 3);
+  // Top 3 from unfiltered ranked list (ignore team/search filter for podium)
+  const top3 = rankedList.slice(0, 3);
+
+  const selectedMonthLabel = MONTHS.find(m => m.key === selectedMonth)?.label || '';
 
   return (
     <div className="p-6 lg:p-10 space-y-6">
@@ -35,8 +90,69 @@ export default function Leaderboard() {
           <h1 className="text-2xl font-bold" style={{ color: '#202124' }}>Sıralama</h1>
           <p className="text-sm" style={{ color: '#5F6368' }}>
             {leaderboard.length} katılımcı
+            {dateMode === 'monthly' && selectedMonth && (
+              <span> · {selectedMonthLabel}</span>
+            )}
           </p>
         </div>
+      </div>
+
+      {/* Date Mode Toggle */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <div
+          className="flex rounded-xl p-1 gap-1"
+          style={{ background: '#F1F3F4', border: '1px solid #DADCE0' }}
+        >
+          <button
+            onClick={() => handleDateMode('all')}
+            className="flex items-center gap-2 px-2 py-2.5 rounded-lg text-sm font-semibold transition-all"
+            style={{
+              background: dateMode === 'all' ? '#FFFFFF' : 'transparent',
+              color: dateMode === 'all' ? '#34A853' : '#5F6368',
+              boxShadow: dateMode === 'all' ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
+              border: dateMode === 'all' ? '1px solid rgba(52,168,83,0.25)' : '1px solid transparent',
+            }}
+          >
+            <LayoutList size={15} />
+            Tümü
+          </button>
+          <button
+            onClick={() => handleDateMode('monthly')}
+            className="flex items-center gap-2 px-2 py-2.5 rounded-lg text-sm font-semibold transition-all"
+            style={{
+              background: dateMode === 'monthly' ? '#FFFFFF' : 'transparent',
+              color: dateMode === 'monthly' ? '#4285F4' : '#5F6368',
+              boxShadow: dateMode === 'monthly' ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
+              border: dateMode === 'monthly' ? '1px solid rgba(66,133,244,0.25)' : '1px solid transparent',
+            }}
+          >
+            <Calendar size={15} />
+            Aylık
+          </button>
+        </div>
+
+        {dateMode === 'monthly' && (
+          <select
+            value={selectedMonth || ''}
+            onChange={e => setSelectedMonth(e.target.value)}
+            className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+            style={{
+              background: '#FFFFFF',
+              color: '#202124',
+              border: '1px solid rgba(66,133,244,0.4)',
+              outline: 'none',
+              boxShadow: '0 1px 4px rgba(66,133,244,0.1)',
+            }}
+          >
+            {availableMonths.length === 0 ? (
+              <option value="">Veri yok</option>
+            ) : (
+              availableMonths.map(m => (
+                <option key={m.key} value={m.key}>{m.label}</option>
+              ))
+            )}
+          </select>
+        )}
       </div>
 
       {/* Top 3 Podium */}

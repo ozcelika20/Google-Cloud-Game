@@ -24,11 +24,11 @@
   }
 }
 
-* {
+/* * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
+} */
 
 body {
   background-color: #F8F9FA;
@@ -83,10 +83,10 @@ body {
   box-shadow: 0 0 15px rgba(161, 66, 244, 0.3);
 }
 
-/* Grid base */
+/* Grid base
 .grid {
   padding: 16px;
-}
+}*/
 
 /* Card base */
 .card {
