@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Trophy, Award, Cloud, Pin } from 'lucide-react';
+import { LayoutDashboard, Trophy, Award, Cloud, Pin, HelpCircle } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Genel Bakış', icon: LayoutDashboard, exact: true },
@@ -177,6 +177,45 @@ export default function Sidebar({ isPinned, onPinToggle, onHoverChange }) {
           </NavLink>
         ))}
       </nav>
+
+      {/* ── SSS ── */}
+      <div style={{ borderTop: '1px solid #DADCE0', paddingTop: '8px', flexShrink: 0 }}>
+        <NavLink
+          to="/faq"
+          title={!expanded ? 'SSS' : undefined}
+          style={({ isActive }) => ({
+            display: 'flex',
+            alignItems: 'center',
+            margin: '2px 8px 6px',
+            padding: expanded ? '8px 10px' : '8px',
+            justifyContent: expanded ? 'flex-start' : 'center',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: isActive ? '#fff' : '#5F6368',
+            background: isActive ? 'rgba(66,133,244,0.15)' : 'transparent',
+            textDecoration: 'none',
+            transition: 'background 0.15s, color 0.15s',
+            gap: '12px',
+          })}
+          className={({ isActive }) => isActive ? '' : 'hover:bg-black/5'}
+        >
+          {({ isActive }) => (
+            <>
+              <HelpCircle size={18} color={isActive ? '#4285F4' : '#5F6368'} style={{ flexShrink: 0 }} />
+              <span
+                className="transition-all duration-200"
+                style={{ opacity: expanded ? 1 : 0, width: expanded ? 'auto' : 0, overflow: 'hidden', whiteSpace: 'nowrap' }}
+              >
+                SSS
+              </span>
+              {isActive && expanded && (
+                <span style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: '#4285F4', flexShrink: 0 }} />
+              )}
+            </>
+          )}
+        </NavLink>
+      </div>
 
       {/* ── Footer ── */}
       <div style={{ borderTop: '1px solid #DADCE0', padding: '12px 14px', flexShrink: 0 }}>

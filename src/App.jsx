@@ -8,6 +8,7 @@ import ParticipantProfile from './pages/ParticipantProfile';
 import Certificates from './pages/Certificates';
 import Leaderboard from './pages/Leaderboard';
 import Admin from './pages/Admin';
+import FAQ from './pages/FAQ';
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="certificates" element={<Certificates />} />
             <Route path="leaderboard" element={<Leaderboard />} />
             <Route path="admin" element={<Admin />} />
+            <Route path="faq" element={<FAQ />} />
           </Route>
         </Routes>
       </CompetitionProvider>
