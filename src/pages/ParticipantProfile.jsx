@@ -47,7 +47,9 @@ export default function ParticipantProfile() {
     return { month: label, points: histEntry ? histEntry.points : 0 };
   });
 
-  const earnedCerts = ALL_CERTIFICATES.filter(c => participant.certificates?.includes(c.id));
+  const earnedCerts = ALL_CERTIFICATES.filter(c =>
+    (participant.certificates || []).some(cert => (typeof cert === 'string' ? cert : cert.id) === c.id)
+  );
   const certMap = {};
   ALL_CERTIFICATES.forEach(c => { certMap[c.id] = c; });
 

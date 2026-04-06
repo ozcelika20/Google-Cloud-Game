@@ -25,7 +25,9 @@ export default function CertificateHeatmap() {
       const row = { cert };
       TEAMS.forEach(teamId => {
         const teamMembers = participants.filter(p => p.teamId === teamId);
-        const count = teamMembers.filter(p => p.certificates?.includes(cert.id)).length;
+        const count = teamMembers.filter(p =>
+          (p.certificates || []).some(c => (typeof c === 'string' ? c : c.id) === cert.id)
+        ).length;
         const pct = teamMembers.length > 0 ? count / teamMembers.length : 0;
         row[teamId] = { count, pct };
       });

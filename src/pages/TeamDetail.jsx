@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Trophy, Award, CheckCircle, TrendingUp } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
 import TeamMembersTable from '../components/tables/TeamMembersTable';
-import { formatNumber } from '../utils/helpers';
+import { formatNumber, isInTeam } from '../utils/helpers';
 import { hasKusursuzBirlik, hasBulutOrdusu } from '../utils/pointCalculator';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -26,7 +26,7 @@ export default function TeamDetail() {
   const { participants, teamScores, getTeamById } = useCompetition();
 
   const team = getTeamById(teamId);
-  const teamMembers = useMemo(() => participants.filter(p => p.teamId === teamId), [participants, teamId]);
+  const teamMembers = useMemo(() => participants.filter(p => isInTeam(p, teamId)), [participants, teamId]);
   const rank = teamScores.findIndex(t => t.id === teamId) + 1;
 
   const coursesLabsCount = useMemo(() =>

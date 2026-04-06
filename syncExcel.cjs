@@ -11,7 +11,9 @@
  *   Passed must be "true" (case-insensitive)
  *
  * Sheet2 columns expected:
- *   Ekip Üyesi | Mail Adresi | Ekibi
+ *   Ekip Üyesi | Mail Adresi | Ekibi | ROLE
+ *   ROLE values: MANAGER → marks that participant as a manager (bonus for their team)
+ *                DIRECTOR → tracked in specialRoles (bonus for all teams), not in leaderboard
  */
 
 const XLSX = require('xlsx');
@@ -69,11 +71,22 @@ function getLatestExcel(dir) {
   return path.join(dir, files[0].f);
 }
 
-function toYearMonth(val) {
+function excelDateToJs(val) {
   if (!val) return null;
   const d = new Date(typeof val === 'number' ? Math.round((val - 25569) * 86400 * 1000) : val);
-  if (isNaN(d.getTime())) return null;
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function toYearMonth(val) {
+  const d = excelDateToJs(val);
+  if (!d) return null;
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function toISODate(val) {
+  const d = excelDateToJs(val);
+  if (!d) return null;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -83,20 +96,36 @@ function main() {
 
   const wb = XLSX.readFile(excelPath);
 
-  // ── Sheet2: email → { name, teamId } ────────────────────────────────────────
+  // ── Sheet2: email → { name, teamId, role } ─────────────────────────────────
   const s2rows = XLSX.utils.sheet_to_json(wb.Sheets['Sheet2'] || wb.Sheets[wb.SheetNames[1]]);
-  const emailToMember = {};
+  const emailToMember = {};  // regular participants (non-directors): email → { name, teamId, role }
+  const directorTeams = {};  // directors: email → { name, teams: [teamId, ...] }
+
   for (const row of s2rows) {
     const email  = String(row['Mail Adresi'] || '').trim().toLowerCase();
     const name   = String(row['Ekip Üyesi'] || '').trim();
     const teamId = String(row['Ekibi'] || '').trim();
-    if (email && name && teamId) emailToMember[email] = { name, teamId };
+    const role   = String(row['ROLE'] || '').trim().toUpperCase();
+    if (!email || !name || !teamId) continue;
+
+    if (role === 'DIRECTOR') {
+      // Directors appear in multiple teams — collect all team entries
+      if (!directorTeams[email]) directorTeams[email] = { name, teams: [] };
+      if (!directorTeams[email].teams.includes(teamId)) {
+        directorTeams[email].teams.push(teamId);
+      }
+    } else {
+      // MANAGER or regular member — goes into leaderboard
+      emailToMember[email] = { name, teamId, role: role || null };
+    }
   }
-  console.log(`Sheet2: ${Object.keys(emailToMember).length} members`);
+  const directorCount = Object.keys(directorTeams).length;
+  const directorEntries = Object.values(directorTeams).reduce((s, d) => s + d.teams.length, 0);
+  console.log(`Sheet2: ${Object.keys(emailToMember).length} members, ${directorCount} directors (${directorEntries} team entries)`);
 
   // ── Sheet1: accumulate per-email stats ──────────────────────────────────────
   const s1rows = XLSX.utils.sheet_to_json(wb.Sheets['Sheet1'] || wb.Sheets[wb.SheetNames[0]]);
-  // emailStats[email] = { courses, labs, certs: Set, monthly: { 'YYYY-MM': { courses, labs, certPoints } } }
+  // emailStats[email] = { courses: [{dateCompleted}], labs: [{dateCompleted}], certs: Map<certId, dateCompleted>, monthly: { 'YYYY-MM': {...} } }
   const emailStats = {};
 
   for (const row of s1rows) {
@@ -110,7 +139,7 @@ function main() {
     if (!['Course', 'Lab', 'Certificate'].includes(atype)) continue;
 
     if (!emailStats[email]) {
-      emailStats[email] = { courses: 0, labs: 0, certs: new Set(), monthly: {} };
+      emailStats[email] = { courses: [], labs: [], certs: new Map(), monthly: {} };
     }
 
     const month = toYearMonth(doneAt);
@@ -119,18 +148,24 @@ function main() {
     }
 
     if (atype === 'Course') {
-      emailStats[email].courses++;
+      const dateStr = toISODate(doneAt);
+      emailStats[email].courses.push({ dateCompleted: dateStr });
       if (month) emailStats[email].monthly[month].courses++;
     } else if (atype === 'Lab') {
-      emailStats[email].labs++;
+      const dateStr = toISODate(doneAt);
+      emailStats[email].labs.push({ dateCompleted: dateStr });
       if (month) emailStats[email].monthly[month].labs++;
     } else if (atype === 'Certificate') {
       const certId = CERT_NAME_TO_ID[act.toLowerCase()];
       if (certId) {
         const isNew = !emailStats[email].certs.has(certId);
-        emailStats[email].certs.add(certId);
-        if (month && isNew) {
-          emailStats[email].monthly[month].certPoints += CERT_POINTS[certId] || 0;
+        if (isNew) {
+          // Store certId → dateCompleted (ISO string or null)
+          const dateStr = toISODate(doneAt);
+          emailStats[email].certs.set(certId, dateStr);
+          if (month) {
+            emailStats[email].monthly[month].certPoints += CERT_POINTS[certId] || 0;
+          }
         }
       } else {
         console.warn(`  ⚠ Unknown certificate: "${act}"`);
@@ -143,8 +178,13 @@ function main() {
   const participants = [];
 
   for (const [email, member] of Object.entries(emailToMember)) {
-    const stats = emailStats[email] || { courses: 0, labs: 0, certs: new Set(), monthly: {} };
-    const certs = Array.from(stats.certs);
+    const stats = emailStats[email] || { courses: [], labs: [], certs: new Map(), monthly: {} };
+
+    // certificates: [{ id, dateCompleted }]
+    const certificates = Array.from(stats.certs.entries()).map(([certId, dateCompleted]) => ({
+      id: certId,
+      dateCompleted,
+    }));
 
     // Monthly history sorted chronologically
     const monthlyHistory = Object.entries(stats.monthly)
@@ -158,7 +198,7 @@ function main() {
     const lastName  = parts[parts.length - 1];
     const firstName = parts.slice(0, parts.length - 1).join(' ') || lastName;
 
-    participants.push({
+    const entry = {
       id: id++,
       name: member.name,
       firstName,
@@ -167,8 +207,51 @@ function main() {
       teamId: member.teamId,
       courses: stats.courses,
       labs: stats.labs,
-      coursesLabs: stats.courses + stats.labs,
-      certificates: certs,
+      coursesLabs: stats.courses.length + stats.labs.length,
+      certificates,
+      monthlyHistory,
+      joinDate: '2025-10-01',
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(firstName + lastName)}&backgroundColor=1A1D2E&textColor=ffffff`,
+    };
+
+    if (member.role === 'MANAGER') entry.role = 'MANAGER';
+    participants.push(entry);
+  }
+
+  // ── Director entries: ONE participant per director, with teamIds array ────────
+  for (const [email, info] of Object.entries(directorTeams)) {
+    const stats = emailStats[email] || { courses: [], labs: [], certs: new Map(), monthly: {} };
+
+    const certificates = Array.from(stats.certs.entries()).map(([certId, dateCompleted]) => ({
+      id: certId,
+      dateCompleted,
+    }));
+
+    const monthlyHistory = Object.entries(stats.monthly)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, d]) => ({
+        month,
+        points: (d.courses + d.labs) * 20 + d.certPoints,
+      }));
+
+    const parts     = info.name.trim().split(/\s+/);
+    const lastName  = parts[parts.length - 1];
+    const firstName = parts.slice(0, parts.length - 1).join(' ') || lastName;
+
+    // Single record — teamIds contains all teams this director belongs to
+    participants.push({
+      id: id++,
+      name: info.name,
+      firstName,
+      lastName,
+      email,
+      teamId: null,
+      teamIds: info.teams,
+      role: 'DIRECTOR',
+      courses: stats.courses,
+      labs: stats.labs,
+      coursesLabs: stats.courses.length + stats.labs.length,
+      certificates,
       monthlyHistory,
       joinDate: '2025-10-01',
       avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(firstName + lastName)}&backgroundColor=1A1D2E&textColor=ffffff`,

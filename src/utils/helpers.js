@@ -108,12 +108,26 @@ export function daysUntil(targetDate) {
 }
 
 /**
- * Group participants by team
+ * Returns true if a participant belongs to the given team.
+ * Handles both single teamId and multi-team (teamIds array) participants.
+ */
+export function isInTeam(p, teamId) {
+  if (p.teamId && p.teamId === teamId) return true;
+  if (p.teamIds && p.teamIds.includes(teamId)) return true;
+  return false;
+}
+
+/**
+ * Group participants by team.
+ * Multi-team participants (teamIds) appear in every relevant team's list.
  */
 export function groupByTeam(participants) {
   return participants.reduce((acc, p) => {
-    if (!acc[p.teamId]) acc[p.teamId] = [];
-    acc[p.teamId].push(p);
+    const teams = p.teamIds || (p.teamId ? [p.teamId] : []);
+    teams.forEach(teamId => {
+      if (!acc[teamId]) acc[teamId] = [];
+      acc[teamId].push(p);
+    });
     return acc;
   }, {});
 }

@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-06T11:16:07.771Z",
+  "lastUpdated": "2026-04-06T18:10:06.679Z",
   "participants": [
     {
       "id": 1,
@@ -8,8 +8,8 @@
       "lastName": "OZTURK",
       "email": "anil.ozturk@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -23,8 +23,12 @@
       "lastName": "ARTUN",
       "email": "cagri.artun@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 1,
-      "labs": 0,
+      "courses": [
+        {
+          "dateCompleted": "2026-03-15"
+        }
+      ],
+      "labs": [],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -34,7 +38,8 @@
         }
       ],
       "joinDate": "2025-10-01",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=CAGRIARTUN&backgroundColor=1A1D2E&textColor=ffffff"
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=CAGRIARTUN&backgroundColor=1A1D2E&textColor=ffffff",
+      "role": "MANAGER"
     },
     {
       "id": 3,
@@ -43,8 +48,8 @@
       "lastName": "ONER",
       "email": "deniz.oner@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -58,8 +63,8 @@
       "lastName": "YALCIN",
       "email": "yalcin.dogukan@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -73,8 +78,8 @@
       "lastName": "SARIOGLU",
       "email": "erdal.sarioglu@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -88,8 +93,8 @@
       "lastName": "KILIC",
       "email": "esma.kilic@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -103,8 +108,18 @@
       "lastName": "SAHIN",
       "email": "mehmetsahin@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 3,
+      "courses": [],
+      "labs": [
+        {
+          "dateCompleted": "2026-03-14"
+        },
+        {
+          "dateCompleted": "2026-03-21"
+        },
+        {
+          "dateCompleted": "2026-03-21"
+        }
+      ],
       "coursesLabs": 3,
       "certificates": [],
       "monthlyHistory": [
@@ -123,8 +138,8 @@
       "lastName": "KARAMAN",
       "email": "mert.karaman@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -138,8 +153,8 @@
       "lastName": "DERICI",
       "email": "oguzhan.derici@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -153,8 +168,8 @@
       "lastName": "ARSLAN",
       "email": "onurarslan@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -168,8 +183,8 @@
       "lastName": "KISAOGLU",
       "email": "ozge.kisaoglu@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -183,8 +198,8 @@
       "lastName": "BOZKURT",
       "email": "ozgur.bozkurt@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -198,8 +213,8 @@
       "lastName": "OZGAT",
       "email": "said.ozgat@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -213,8 +228,8 @@
       "lastName": "ORMAN",
       "email": "sidar.orman@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -228,8 +243,8 @@
       "lastName": "SAYICI",
       "email": "tunga.sayici@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -243,8 +258,8 @@
       "lastName": "TURKYILMAZ",
       "email": "ugur.turkyilmaz@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -258,8 +273,8 @@
       "lastName": "CANER",
       "email": "umutcan.caner@turkcell.com.tr",
       "teamId": "DCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -273,8 +288,8 @@
       "lastName": "OZCELIK",
       "email": "ayse.ozcelik@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -288,8 +303,8 @@
       "lastName": "KARAGUL",
       "email": "aysun.karagul@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -303,8 +318,8 @@
       "lastName": "TURKYILMAZ",
       "email": "baris.turkyilmaz@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -318,8 +333,8 @@
       "lastName": "OZSAHIN",
       "email": "burak.ozsahin@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -333,8 +348,8 @@
       "lastName": "KEREMITCI",
       "email": "cansu.keremitci@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -348,8 +363,12 @@
       "lastName": "UNAL",
       "email": "dilara.unal@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 1,
+      "courses": [],
+      "labs": [
+        {
+          "dateCompleted": "2026-03-29"
+        }
+      ],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -368,8 +387,8 @@
       "lastName": "ALGUL",
       "email": "duygu.akbunar@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -383,8 +402,8 @@
       "lastName": "USTUNLUOGLU",
       "email": "ebru.ustunluoglu@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -398,8 +417,8 @@
       "lastName": "GUNERI",
       "email": "eda.guneri@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -413,8 +432,8 @@
       "lastName": "AYDINLAR",
       "email": "esra.ozcan@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -428,8 +447,8 @@
       "lastName": "GULSEN",
       "email": "faruk.gulsen@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -443,8 +462,8 @@
       "lastName": "ELCI",
       "email": "gamze.sevdik@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -458,8 +477,8 @@
       "lastName": "KABASAKAL",
       "email": "gizem.kabasakal@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -473,8 +492,8 @@
       "lastName": "CAKAR",
       "email": "kubra.cakar@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -488,8 +507,8 @@
       "lastName": "OZSIPAHI",
       "email": "mehpare.ozsipahi@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -503,8 +522,8 @@
       "lastName": "CALLI",
       "email": "melih.calli@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -518,13 +537,14 @@
       "lastName": "DISBUDAK",
       "email": "melike.disbudak@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
       "joinDate": "2025-10-01",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=MELIKEDISBUDAK&backgroundColor=1A1D2E&textColor=ffffff"
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=MELIKEDISBUDAK&backgroundColor=1A1D2E&textColor=ffffff",
+      "role": "MANAGER"
     },
     {
       "id": 35,
@@ -533,8 +553,8 @@
       "lastName": "ISIK",
       "email": "nese.isik@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -548,8 +568,8 @@
       "lastName": "BAS",
       "email": "onurhan.bas@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -563,15 +583,18 @@
       "lastName": "UYSAL",
       "email": "ratipcan.uysal@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [
-        "cloud-digital-leader"
+        {
+          "id": "cloud-digital-leader",
+          "dateCompleted": "2026-01-31"
+        }
       ],
       "monthlyHistory": [
         {
-          "month": "2026-03",
+          "month": "2026-01",
           "points": 150
         }
       ],
@@ -585,8 +608,8 @@
       "lastName": "CELENK",
       "email": "serkan.celenk@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -600,8 +623,8 @@
       "lastName": "OLCUM",
       "email": "sevcan.olcum@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -615,8 +638,12 @@
       "lastName": "ERDEM",
       "email": "ugur.erdem@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 1,
+      "courses": [],
+      "labs": [
+        {
+          "dateCompleted": "2026-01-07"
+        }
+      ],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -635,8 +662,8 @@
       "lastName": "OZDEMIR",
       "email": "aydin.zeynep@turkcell.com.tr",
       "teamId": "DPM",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -650,8 +677,8 @@
       "lastName": "BAKKAL",
       "email": "ahmet.bakkal@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -665,8 +692,8 @@
       "lastName": "DURDU",
       "email": "aysegul.durdu@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -680,8 +707,8 @@
       "lastName": "UYAR",
       "email": "baris.uyar@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -695,13 +722,14 @@
       "lastName": "ERDOGAN",
       "email": "batuhan.erdogan@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
       "joinDate": "2025-10-01",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=BATUHANERDOGAN&backgroundColor=1A1D2E&textColor=ffffff"
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=BATUHANERDOGAN&backgroundColor=1A1D2E&textColor=ffffff",
+      "role": "MANAGER"
     },
     {
       "id": 46,
@@ -710,8 +738,8 @@
       "lastName": "KULOGLU",
       "email": "can.kuloglu@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -725,8 +753,8 @@
       "lastName": "ERDEM",
       "email": "cansu.arar@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -740,8 +768,8 @@
       "lastName": "PAPAKCI",
       "email": "eren.papakci@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -755,8 +783,8 @@
       "lastName": "PASAOGLU",
       "email": "furkan.pasaoglu@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -770,8 +798,8 @@
       "lastName": "VURAL",
       "email": "lorin.vural@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -785,8 +813,8 @@
       "lastName": "YEGIN",
       "email": "serkut.yegin@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -800,8 +828,8 @@
       "lastName": "EROL",
       "email": "umut.erol@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -815,8 +843,8 @@
       "lastName": "DEMIR",
       "email": "yusuf.demir@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -830,8 +858,8 @@
       "lastName": "BALTALIOGLU",
       "email": "zeynep.baltalioglu@turkcell.com.tr",
       "teamId": "MSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -845,8 +873,8 @@
       "lastName": "COLAK",
       "email": "ahmet.colak@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -860,8 +888,12 @@
       "lastName": "BOYACI",
       "email": "enes.boyaci@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 1,
+      "courses": [],
+      "labs": [
+        {
+          "dateCompleted": "2026-03-24"
+        }
+      ],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -880,13 +912,14 @@
       "lastName": "SANCAK",
       "email": "engin.sancak@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
       "joinDate": "2025-10-01",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=ENGINSANCAK&backgroundColor=1A1D2E&textColor=ffffff"
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=ENGINSANCAK&backgroundColor=1A1D2E&textColor=ffffff",
+      "role": "MANAGER"
     },
     {
       "id": 58,
@@ -895,8 +928,8 @@
       "lastName": "AKARCESME",
       "email": "furkan.akarcesme@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -910,8 +943,12 @@
       "lastName": "ATAK",
       "email": "furkan.atak@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 1,
+      "courses": [],
+      "labs": [
+        {
+          "dateCompleted": "2026-03-09"
+        }
+      ],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -930,8 +967,8 @@
       "lastName": "FURTUNA",
       "email": "haluk.furtuna@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -945,8 +982,97 @@
       "lastName": "ACAR",
       "email": "kemal.acar@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 6,
-      "labs": 23,
+      "courses": [
+        {
+          "dateCompleted": "2026-03-21"
+        },
+        {
+          "dateCompleted": "2026-03-07"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-05"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        }
+      ],
+      "labs": [
+        {
+          "dateCompleted": "2026-03-06"
+        },
+        {
+          "dateCompleted": "2026-03-06"
+        },
+        {
+          "dateCompleted": "2026-03-08"
+        },
+        {
+          "dateCompleted": "2026-03-09"
+        },
+        {
+          "dateCompleted": "2026-03-07"
+        },
+        {
+          "dateCompleted": "2026-03-08"
+        },
+        {
+          "dateCompleted": "2026-03-07"
+        },
+        {
+          "dateCompleted": "2026-03-14"
+        },
+        {
+          "dateCompleted": "2026-03-06"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-14"
+        },
+        {
+          "dateCompleted": "2026-03-05"
+        },
+        {
+          "dateCompleted": "2026-03-04"
+        },
+        {
+          "dateCompleted": "2026-03-21"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-03"
+        },
+        {
+          "dateCompleted": "2026-03-05"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        }
+      ],
       "coursesLabs": 29,
       "certificates": [],
       "monthlyHistory": [
@@ -965,8 +1091,12 @@
       "lastName": "APEL",
       "email": "mehmet.apel@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 1,
+      "courses": [],
+      "labs": [
+        {
+          "dateCompleted": "2026-03-05"
+        }
+      ],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -985,8 +1115,8 @@
       "lastName": "DEMIRCAN",
       "email": "melih.demircan@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1000,8 +1130,8 @@
       "lastName": "KILINC",
       "email": "ozan.kilinc@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1015,8 +1145,8 @@
       "lastName": "OZ",
       "email": "soner.oz@turkcell.com.tr",
       "teamId": "ECCBE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1030,8 +1160,8 @@
       "lastName": "ARDA",
       "email": "erhan.arda@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1045,8 +1175,8 @@
       "lastName": "OZDEMIR",
       "email": "ferhat.ozdemir@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1060,8 +1190,8 @@
       "lastName": "BOGA",
       "email": "gizem.boga@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1075,20 +1205,32 @@
       "lastName": "YILDIRIM",
       "email": "kaan.yildirim@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 1,
-      "labs": 0,
+      "courses": [
+        {
+          "dateCompleted": "2026-03-18"
+        }
+      ],
+      "labs": [],
       "coursesLabs": 1,
       "certificates": [
-        "gen-ai-leader"
+        {
+          "id": "gen-ai-leader",
+          "dateCompleted": "2026-01-31"
+        }
       ],
       "monthlyHistory": [
         {
+          "month": "2026-01",
+          "points": 150
+        },
+        {
           "month": "2026-03",
-          "points": 170
+          "points": 20
         }
       ],
       "joinDate": "2025-10-01",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=KAANYILDIRIM&backgroundColor=1A1D2E&textColor=ffffff"
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=KAANYILDIRIM&backgroundColor=1A1D2E&textColor=ffffff",
+      "role": "MANAGER"
     },
     {
       "id": 70,
@@ -1097,8 +1239,8 @@
       "lastName": "AYKUT",
       "email": "melek.aykut@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1112,8 +1254,12 @@
       "lastName": "TARHAN",
       "email": "nisan.tarhan@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 1,
-      "labs": 0,
+      "courses": [
+        {
+          "dateCompleted": "2026-02-20"
+        }
+      ],
+      "labs": [],
       "coursesLabs": 1,
       "certificates": [],
       "monthlyHistory": [
@@ -1132,8 +1278,8 @@
       "lastName": "OK",
       "email": "reha.ok@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1147,8 +1293,8 @@
       "lastName": "TEZCAN",
       "email": "tolunay.tezcan@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1162,8 +1308,8 @@
       "lastName": "BOZKURT",
       "email": "zafer.bozkurt@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 0,
-      "labs": 0,
+      "courses": [],
+      "labs": [],
       "coursesLabs": 0,
       "certificates": [],
       "monthlyHistory": [],
@@ -1177,8 +1323,18 @@
       "lastName": "KARA",
       "email": "zeynep.kara@turkcell.com.tr",
       "teamId": "WSE",
-      "courses": 3,
-      "labs": 0,
+      "courses": [
+        {
+          "dateCompleted": "2026-03-29"
+        },
+        {
+          "dateCompleted": "2026-03-29"
+        },
+        {
+          "dateCompleted": "2026-01-23"
+        }
+      ],
+      "labs": [],
       "coursesLabs": 3,
       "certificates": [],
       "monthlyHistory": [
@@ -1193,6 +1349,66 @@
       ],
       "joinDate": "2025-10-01",
       "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=ZEYNEPKARA&backgroundColor=1A1D2E&textColor=ffffff"
+    },
+    {
+      "id": 76,
+      "name": "OMERCAN YUKSEL",
+      "firstName": "OMERCAN",
+      "lastName": "YUKSEL",
+      "email": "omercan.yuksel@turkcell.com.tr",
+      "teamId": null,
+      "teamIds": [
+        "DCBE",
+        "DPM",
+        "MSE",
+        "ECCBE",
+        "WSE"
+      ],
+      "role": "DIRECTOR",
+      "courses": [
+        {
+          "dateCompleted": "2026-03-30"
+        },
+        {
+          "dateCompleted": "2026-03-10"
+        },
+        {
+          "dateCompleted": "2026-03-01"
+        },
+        {
+          "dateCompleted": "2026-02-28"
+        },
+        {
+          "dateCompleted": "2026-03-20"
+        },
+        {
+          "dateCompleted": "2026-02-26"
+        }
+      ],
+      "labs": [
+        {
+          "dateCompleted": "2026-02-26"
+        }
+      ],
+      "coursesLabs": 7,
+      "certificates": [
+        {
+          "id": "gen-ai-leader",
+          "dateCompleted": "2026-03-29"
+        }
+      ],
+      "monthlyHistory": [
+        {
+          "month": "2026-02",
+          "points": 60
+        },
+        {
+          "month": "2026-03",
+          "points": 230
+        }
+      ],
+      "joinDate": "2025-10-01",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=OMERCANYUKSEL&backgroundColor=1A1D2E&textColor=ffffff"
     }
   ]
 }

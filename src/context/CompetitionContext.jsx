@@ -6,8 +6,10 @@ import {
   hasKusursuzBirlik,
   hasBulutOrdusu,
   getActiveRules,
+  getManagerBonuses,
+  getActiveManagerBonuses,
 } from '../utils/pointCalculator';
-import { sortByPoints, groupByTeam } from '../utils/helpers';
+import { sortByPoints, groupByTeam, isInTeam } from '../utils/helpers';
 import participantsData from '../data/participants.json';
 
 export const CompetitionContext = createContext(null);
@@ -37,10 +39,23 @@ export function CompetitionProvider({ children }) {
     saveCustomRules(customRules);
   }, [customRules]);
 
+  // All manager/director bonus windows (past + present + future)
+  const managerBonuses = useMemo(() =>
+    getManagerBonuses(rawParticipants),
+    [rawParticipants]
+  );
+
+  // Only bonuses active today
+  const activeManagerBonuses = useMemo(() =>
+    getActiveManagerBonuses(rawParticipants),
+    [rawParticipants]
+  );
+
   // Computed: participants with calculated points
+  // Pass ALL manager bonus windows (not just today's) so per-activity date checks work correctly
   const participants = useMemo(() => {
-    return getParticipantsWithPoints(rawParticipants, customRules);
-  }, [rawParticipants, customRules]);
+    return getParticipantsWithPoints(rawParticipants, customRules, managerBonuses);
+  }, [rawParticipants, customRules, managerBonuses]);
 
   // Computed: leaderboard
   const leaderboard = useMemo(() => sortByPoints(participants), [participants]);
@@ -48,8 +63,8 @@ export function CompetitionProvider({ children }) {
   // Computed: team scores
   const teamScores = useMemo(() => {
     return TEAMS.map(team => {
-      const members    = participants.filter(p => p.teamId === team.id);
-      const rawMembers = rawParticipants.filter(p => p.teamId === team.id);
+      const members    = participants.filter(p => isInTeam(p, team.id));
+      const rawMembers = rawParticipants.filter(p => isInTeam(p, team.id));
       const score = members.reduce((sum, p) => sum + p.totalPoints, 0);
       return {
         ...team,
@@ -124,7 +139,7 @@ export function CompetitionProvider({ children }) {
   }, [participants]);
 
   const getTeamById   = useCallback((id) => TEAMS.find(t => t.id === id), []);
-  const getTeamMembers = useCallback((teamId) => participants.filter(p => p.teamId === teamId), [participants]);
+  const getTeamMembers = useCallback((teamId) => participants.filter(p => isInTeam(p, teamId)), [participants]);
 
   const value = {
     // State
@@ -132,6 +147,8 @@ export function CompetitionProvider({ children }) {
     rawParticipants,
     customRules,
     activeRules,
+    managerBonuses,
+    activeManagerBonuses,
     competitionEndDate,
     lastUpdated: participantsData.lastUpdated,
     teams: TEAMS,

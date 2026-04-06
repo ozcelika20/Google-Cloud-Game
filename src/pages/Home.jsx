@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Award } from 'lucide-react';
 import { useCompetition } from '../hooks/useCompetition';
@@ -8,10 +8,78 @@ import TeamCard from '../components/cards/TeamCard';
 import TeamScoreChart from '../components/charts/TeamScoreChart';
 import LevelDistributionChart from '../components/charts/LevelDistributionChart';
 import LeaderboardTable from '../components/tables/LeaderboardTable';
-import { REWARDS, REWARD_CONDITIONS } from '../data/mockData';
+import { REWARDS, REWARD_CONDITIONS, TEAMS } from '../data/mockData';
+
+function formatDateTR(date) {
+  return date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function ManagerBonusBanners({ managerBonuses }) {
+  const now = new Date();
+  const active = managerBonuses.filter(b => now >= b.startDate && now <= b.endDate);
+  if (active.length === 0) return null;
+
+  // Deduplicate: one banner per (type, teamId) — pick the one ending latest
+  const seen = new Map();
+  for (const b of active) {
+    const key = b.type === 'director' ? '__director__' : b.teamId;
+    if (!seen.has(key) || b.endDate > seen.get(key).endDate) seen.set(key, b);
+  }
+  const deduped = Array.from(seen.values());
+
+  return (
+    <div className="space-y-3">
+      {deduped.map((b, i) => {
+        const endDateStr = formatDateTR(b.endDate);
+        const daysLeft   = Math.ceil((b.endDate - now) / (1000 * 60 * 60 * 24));
+        const endingSoon = daysLeft <= 3;
+
+        const isDirector = b.type === 'director';
+        const teamName   = isDirector
+          ? null
+          : TEAMS.find(t => t.id === b.teamId)?.name || b.teamId;
+
+        const label = isDirector
+          ? `Direktör Bonusu bitiş tarihi: ${endDateStr}`
+          : `${teamName} ekibi Yönetici Bonusu bitiş tarihi: ${endDateStr}`;
+
+        const gradient = isDirector
+          ? 'linear-gradient(90deg,#EA4335,#FBBC04)'
+          : i % 2 === 0
+            ? 'linear-gradient(90deg,#4285F4,#34A853)'
+            : 'linear-gradient(90deg,#A142F4,#4285F4)';
+
+        return (
+          <div
+            key={`${b.type}-${b.teamId}-${b.startDate.getTime()}`}
+            className="flex items-center justify-between px-5 py-3 rounded-xl"
+            style={{ background: gradient }}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-xl">{isDirector ? '👑' : '⭐'}</span>
+              <div>
+                <p className="font-bold text-white text-sm drop-shadow-sm">
+                  ×1.5 Bonus Aktif — {label}
+                </p>
+                {endingSoon && (
+                  <p className="text-xs text-white/80 font-medium mt-0.5">
+                    ⚠️ Son {daysLeft} gün!
+                  </p>
+                )}
+              </div>
+            </div>
+            <span className="text-xs font-semibold text-white/80 flex-shrink-0 ml-4">
+              {isDirector ? 'Tüm Ekipler' : teamName}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function Home() {
-  const { stats, teamScores, leaderboard, activeRules } = useCompetition();
+  const { stats, teamScores, leaderboard, activeRules, managerBonuses } = useCompetition();
 
   return (
     <div className="p-8 space-y-8">
@@ -35,6 +103,9 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* Yönetici Bonusu Banners */}
+      <ManagerBonusBanners managerBonuses={managerBonuses} />
 
       {/* Stats Row: Toplam Sertifika + Geri Sayım */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -78,7 +149,6 @@ export default function Home() {
         </div>
         <LeaderboardTable participants={leaderboard} showAll={false} />
       </div>
-
 
     </div>
   );

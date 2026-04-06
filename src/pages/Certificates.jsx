@@ -18,7 +18,9 @@ export default function Certificates() {
   const certStats = useMemo(() => {
     const stats = {};
     [...CERTIFICATES.foundational, ...CERTIFICATES.associate, ...CERTIFICATES.professional].forEach(cert => {
-      stats[cert.id] = participants.filter(p => p.certificates?.includes(cert.id)).length;
+      stats[cert.id] = participants.filter(p =>
+        (p.certificates || []).some(c => (typeof c === 'string' ? c : c.id) === cert.id)
+      ).length;
     });
     return stats;
   }, [participants]);
