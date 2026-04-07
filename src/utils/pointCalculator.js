@@ -110,6 +110,7 @@ export function getActiveManagerBonuses(participants, date = new Date()) {
  * for this participant. Each matching bonus counts as one ×1.5 multiplier.
  */
 function countApplicableBonuses(dateStr, allManagerBonuses, participant) {
+  if (participant.role === 'MANAGER' || participant.role === 'DIRECTOR') return 0;
   if (!dateStr || !allManagerBonuses || allManagerBonuses.length === 0) return 0;
   const actDate = new Date(dateStr);
   let count = 0;
@@ -183,6 +184,8 @@ export function calculateParticipantPoints(participant, customRules, allParticip
 
   // 4. İstikrar Puanı: previous month → current month ≥ +50% → ×1.2
   // Only applies when the two entries are consecutive months.
+  // The ×1.2 multiplier applies only to activities completed in the month
+  // immediately following the last history entry (not the full total).
   const history = participant.monthlyHistory || [];
   if (history.length >= 2) {
     const prevEntry = history[history.length - 2];
@@ -193,7 +196,39 @@ export function calculateParticipantPoints(participant, customRules, allParticip
       (currYear === prevYear && currMonth === prevMonth + 1) ||
       (currYear === prevYear + 1 && prevMonth === 12 && currMonth === 1);
     if (isConsecutive && prevEntry.points > 0 && currEntry.points >= prevEntry.points * 1.5) {
-      total = Math.floor(total * 1.2);
+      // Bonus month is the current (latest) history entry month
+      const bonusMonth = currEntry.month;
+
+      // Sum points for activities completed in the bonus month only
+      let bonusMonthPoints = 0;
+      if (Array.isArray(courses)) {
+        for (const c of courses) {
+          if (!c.dateCompleted || !c.dateCompleted.startsWith(bonusMonth)) continue;
+          const base = applyRuleMultiplier(COURSE_LAB_POINTS, activeRules, 'course');
+          const n = countApplicableBonuses(c.dateCompleted, allManagerBonuses, participant);
+          bonusMonthPoints += applyManagerMultiplier(base, n);
+        }
+      }
+      if (Array.isArray(labs)) {
+        for (const l of labs) {
+          if (!l.dateCompleted || !l.dateCompleted.startsWith(bonusMonth)) continue;
+          const base = applyRuleMultiplier(COURSE_LAB_POINTS, activeRules, 'lab');
+          const n = countApplicableBonuses(l.dateCompleted, allManagerBonuses, participant);
+          bonusMonthPoints += applyManagerMultiplier(base, n);
+        }
+      }
+      for (const cert of (participant.certificates || [])) {
+        const certId = getCertId(cert);
+        if (!CERT_MAP[certId]) continue;
+        const dateStr = typeof cert === 'string' ? null : cert.dateCompleted;
+        if (!dateStr || !dateStr.startsWith(bonusMonth)) continue;
+        const base = applyRuleMultiplier(CERT_MAP[certId].points, activeRules, 'certificate');
+        const n = countApplicableBonuses(dateStr, allManagerBonuses, participant);
+        bonusMonthPoints += applyManagerMultiplier(base, n);
+      }
+
+      // Add the 20% bonus on top of already-included bonusMonthPoints
+      total += Math.floor(bonusMonthPoints * 0.2);
     }
   }
 
